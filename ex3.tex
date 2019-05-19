@@ -7,4 +7,40 @@ In an Einstein-de Sitter Universe where the only component in the equations of s
   a(t) = \left(\frac{3}{2}H_0t\right)^{2/3}
 \end{equation}
 
-Separating the temporal and spatial components in the Second O.D.E. of density perturbations: $
+Separating the temporal and spatial components in the Second O.D.E. of density perturbations $\delta = D(t)\Delta(x)$, the differential equation can be written in just the spatial component as:
+
+\begin{equation}
+  \frac{d^2D}{dt^2}+2\frac{\dot{a}}{a}\frac{dD}{dt}=\frac{3}{2}\Omega_0H_0^2\frac{1}{a^3}D
+\end{equation}
+
+Plugging in the scale factor, where the total density $\Omega_0 = \Omega_m$
+
+\begin{equation}
+  \frac{\delta^2D}{\delta t^2}+2\frac{4}{3t}\frac{\delta D}{\delta t}=\frac{2}{3}\frac{\Omega_m}{t^2}D
+\end{equation}
+
+Then we are left with a second order differential equation of the form
+
+\begin{equation}
+  \frac{\delta^2D}{\delta t^2}=f\left(t,D,\frac{\delta D}{\delta t}\right)
+\end{equation}
+
+Euler's method leads to a lot of error (on the order of the step size),  due to local truncations adding up in each step of the numerical integration. A higher order method such as Runge Kutta mitigates this truncation error due to its basic estimation of the next point from a projection forward using the current slope. Whereas Runge Kutta methods combine calculations of the slope at intermediate points between step sizes in the integration of the ODE. Fourth order RK gives the most computationally cost efficient solution, and succeeds almost always.
+
+For a second order differential equation like this one, we must rewrite it first as two coupled first order differential equations. 
+
+\begin{equation}
+  \frac{\delta D}{\delta t} \equiv z \text{   } \left(\frac{\delta^2D}{\delta t^2} = \frac{\delta z}{\delta t}\right)
+\end{equation}
+
+Just leaving:
+
+\begin{equation}
+  \frac{\delta D}{\delta t} = g\left(t,D,z)
+  \frac{\delta z}{\delta t} = f\left(t,D,z)
+  \label{eq:fode}
+\end{equation}
+
+and so Equation (\ref{eq:fode}) forms a coupled set of first order differential equations.
+
+This system can be solved for using the RK4 method in order to integrate the original second order differential equation and find the spatial density perturbation term.

@@ -10,17 +10,17 @@ import matplotlib.pyplot as plt
 #def g(t,D,z): # (z(t)=dD/dt = g)
 #    return z
 
-def f(t,D,z):
-    return z
+#def f(t,D,z):
+#    return z
 
-def g(t,D,z):
-    return 6.*D-z
+#def g(t,D,z):
+#    return 6.*D-z
 
 #===================
 #fourth order RK
 
 #integrate from t=1yr to t=1000yrs
-t0=0.; t_end=10.
+t0=1.; t_end=1000.
 h=0.1     #step size
 
 D=np.zeros(int((t_end-t0)/h)+1) # +1 for reaching 1000years
@@ -28,7 +28,7 @@ t=D.copy()
 
 Dcurr=3. #initial conditions
 zcurr=1.
-tcurr=t0 #integrate from zero
+tcurr=t0 #integrate from 1yr
 
 
 #take two first order DE's (functions of t, D, and z) and increment via RK4
@@ -53,8 +53,8 @@ for i in range(len(t)):
     Dcurr,zcurr=Dnew,znew # update
     tcurr+=h
 
-x=np.linspace(t0,t_end,len(t))
-plt.plot(x,np.exp(-3.*x)+2.*np.exp(2.*x),label="analytical")
+#x=np.linspace(t0,t_end,len(t))
+#plt.plot(x,np.exp(-3.*x)+2.*np.exp(2.*x),label="analytical")
 plt.plot(t,D,":",label='RK4')
 plt.yscale("log")
 plt.xscale("log")
