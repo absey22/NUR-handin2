@@ -1,6 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+from ex1functions import I_0
+print("Initial state set by seed in ex1functions.py:",I_0)
+
 
 # ==========================  1(a)   ==========================
 from ex1functions import Urng

@@ -5,10 +5,10 @@ import numpy as np
 #seed initially supplied to RNG
 #I_0=np.uint64(np.random.random(1)[0]*1e10) # (for testing purposes)
 I_0=np.uint64(791934054635823279)
-import inspect
-frame = inspect.stack()[1]
-if frame[0].f_code.co_filename=="ex1a.py":
-    print("Initial state set by seed in ex1functions.py:",I_0)
+#import inspect
+#frame = inspect.stack()[1]
+#if frame[0].f_code.co_filename=="ex1a.py":
+#    print("Initial state set by seed in ex1functions.py:",I_0)
     
 
 

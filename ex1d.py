@@ -82,8 +82,7 @@ for i in range(len(cnt)):
     mykuiper[i]=kuipertemp[0]+kuipertemp[1],kuipertemp[2] # store those
     Dplus,p_greater=kstest(dataslice,'norm',alternative='greater') # get scipy D,Pval
     Dminus,p_less=kstest(dataslice,'norm',alternative='less') # for kuiper implementation
-    print(p_greater-p_less)
-    scipykuiper[i]=Dplus+Dminus,p_greater-p_less #reimplemented Kuiper via SciPy KS
+    scipykuiper[i]=Dplus+Dminus,p_greater#-p_less #reimplemented Kuiper via SciPy KS
     #astropykuiper[i]=kuiper(dataslice, GaussianCDF) # get astropy D,pval #failed attempt with astropy
 
 
