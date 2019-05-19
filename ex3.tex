@@ -16,28 +16,28 @@ Separating the temporal and spatial components in the Second O.D.E. of density p
 Plugging in the scale factor, where the total density $\Omega_0 = \Omega_m$
 
 \begin{equation}
-  \frac{\delta^2D}{\delta t^2}+2\frac{4}{3t}\frac{\delta D}{\delta t}=\frac{2}{3}\frac{\Omega_m}{t^2}D
+  \frac{\delta^2D}{\delta t^2}=-\frac{4}{3t}\frac{\delta D}{\delta t}+\frac{2}{3t^2}\Omega_mD
 \end{equation}
 
-Then we are left with a second order differential equation of the form
+Meaning this second order differential equation can be written in the form
 
 \begin{equation}
   \frac{\delta^2D}{\delta t^2}=f\left(t,D,\frac{\delta D}{\delta t}\right)
 \end{equation}
 
-Euler's method leads to a lot of error (on the order of the step size),  due to local truncations adding up in each step of the numerical integration. A higher order method such as Runge Kutta mitigates this truncation error due to its basic estimation of the next point from a projection forward using the current slope. Whereas Runge Kutta methods combine calculations of the slope at intermediate points between step sizes in the integration of the ODE. Fourth order RK gives the most computationally cost efficient solution, and succeeds almost always.
+Something like Euler's method for integrating ODE's leads to a lot of error (on the order of the step size). This is due to local truncations adding up in each step of the numerical integration. A higher order method such as Runge Kutta mitigates this truncation error due to its basic estimation of the next point from a projection forward using the current slope. Whereas Runge Kutta methods combine calculations of the slope at intermediate points between step sizes in the integration of the ODE. Fourth order RK gives the most computationally cost efficient solution, and succeeds almost always.
 
-For a second order differential equation like this one, we must rewrite it first as two coupled first order differential equations. 
+To use RK4, a second order differential equation like this one must be rewritten as as two coupled first order differential equations. Therefore define
 
 \begin{equation}
-  \frac{\delta D}{\delta t} \equiv z \text{   } \left(\frac{\delta^2D}{\delta t^2} = \frac{\delta z}{\delta t}\right)
+  \frac{\delta D}{\delta t} \equiv z
 \end{equation}
 
-Leaving the coupled set of first order differential equations:
+This is just a first order differential equation which RK4 is very good at solving as described above. With the above definition and the simplified Einstein-de Sitter perturbation equation, this leaves the coupled set of first order differential equations:
 
 \begin{align}
-  \frac{\delta D}{\delta t} &= g\left(t,D,z)\\
-  \frac{\delta z}{\delta t} &= f\left(t,D,z)
+  \frac{\delta D}{\delta t} &= g(t,D,z)\\
+  \frac{\delta z}{\delta t} &= f(t,D,z)
 \end{align}
 
 
