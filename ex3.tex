@@ -33,14 +33,12 @@ For a second order differential equation like this one, we must rewrite it first
   \frac{\delta D}{\delta t} \equiv z \text{   } \left(\frac{\delta^2D}{\delta t^2} = \frac{\delta z}{\delta t}\right)
 \end{equation}
 
-Just leaving:
+Leaving the coupled set of first order differential equations:
 
 \begin{equation}
   \frac{\delta D}{\delta t} = g\left(t,D,z)
   \frac{\delta z}{\delta t} = f\left(t,D,z)
-  \label{eq:fode}
 \end{equation}
 
-and so Equation (\ref{eq:fode}) forms a coupled set of first order differential equations.
 
 This system can be solved for using the RK4 method in order to integrate the original second order differential equation and find the spatial density perturbation term.

@@ -16,18 +16,19 @@ wget https://home.strw.leidenuniv.nl/~nobels/coursedata/randomnumbers.txt
 echo "Run the first exercise scripts ..."
 echo "--1(a)--"
 python3 ex1a.py
+echo "--1(e)--"
+python3 ex1e.py &   # runs in background
 echo "--1(b)--"
 python3 ex1b.py
-echo "--1(c)---"
+echo "--1(c)--"
 python3 ex1c.py
 echo "--1(d)--"
 python3 ex1d.py
-echo "--1(e)--"
-python3 ex1e.py
+
 
 # Script that pipes output to a file
-echo "Run the second  exercise scripts ..."
-python3 ex2.py
+echo "Run the third  exercise script ..."
+python3 ex3.py
 
 echo "Generating the pdf"
 
