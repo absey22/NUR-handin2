@@ -33,7 +33,9 @@ python3 ex3.py
 echo "Generating the pdf"
 
 pdflatex template.tex
-echo "SEE: template.pdf for solutions."
+
+echo " "
+echo "==> SEE: template.pdf for solutions!!"
 
 
 
