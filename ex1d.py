@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 # ==========================  1(d)   ==========================
 from ex1functions import kuiperstest,BoxMuller, GaussianCDF
-from astropy.stats import kuiper
+#from astropy.stats import kuiper
 from scipy.stats import kstest
 
 #Kuiper V = D+ + D- is a statistic that is invariant under all shifts
@@ -72,24 +72,25 @@ dex=0.1
 start,stop=1,5 
 cnt=np.ones(int((stop-start)/dex)+1)
 mykuiper=np.zeros((len(cnt),2))
-astropykuiper=mykuiper.copy()
+scipykuiper=mykuiper.copy()
 from math import erf
 from astropy.modeling.functional_models import Gaussian1D 
 for i in range(len(cnt)):
     cnt[i]+=round(i*dex,2)
-    print(i)
     dataslice=randomdata[:int(10**cnt[i])]
     kuipertemp=kuiperstest(dataslice) # get D+,D-,pval from my Kuiper test
     mykuiper[i]=kuipertemp[0]+kuipertemp[1],kuipertemp[2] # store those
-    print(mykuiper[i])
-    astropykuiper[i]=kuiper(dataslice,lambda x:0.5*( 1.-erf( -(x-0.0)/(1.0*2**0.5) ) ) ) # get astropy D,pval
-    print("kuiper:",astropykuiper[i])
+    Dplus,p_greater=kstest(dataslice,'norm',alternative='greater') # get scipy D,Pval
+    Dminus,p_less=kstest(dataslice,'norm',alternative='less') # for kuiper implementation
+    print(p_greater-p_less)
+    scipykuiper[i]=Dplus+Dminus,p_greater-p_less #reimplemented Kuiper via SciPy KS
+    #astropykuiper[i]=kuiper(dataslice, GaussianCDF) # get astropy D,pval #failed attempt with astropy
 
 
 plt.subplot(2,1,1)
 plt.title("Kuiper Test: Box-Muller Normal rvs")
 plt.plot(cnt,mykuiper[:,1],label="My Kuiper p-value")
-plt.plot(cnt,scipykuiper[:,1],label="AstroPy p-value")
+plt.plot(cnt,scipykuiper[:,1],label="SciPy p-value")
 plt.xlabel("$log_{10}(N_{points})$")
 plt.ylabel("p-value")
 plt.hlines(0.05,0.8,5.2,linewidth=0.8,linestyles=':')
@@ -102,7 +103,7 @@ plt.legend(loc=1)
 
 plt.subplot(2,1,2)
 plt.plot(cnt,mykuiper[:,0],label="My Kuiper V statistic")
-plt.plot(cnt,scipykuiper[:,0],label="AstroPy V statistic")
+plt.plot(cnt,scipykuiper[:,0],label="SciPy V statistic")
 plt.xlabel("$log_{10}(N_{points})$")
 plt.ylabel("V statistic")
 plt.yscale("log")

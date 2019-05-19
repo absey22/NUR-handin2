@@ -43,7 +43,7 @@ def Urng(size=10):
         draw=MWC(xorshift(I_0)) #construct a composed generator maintaining period of the MWC, this is the simplest and fastest implementation of a combined generator
         I_0=draw #redefine the global seed for next use
         rnglist[i]=draw/((2**64)-1) #normalize to 0,1
-    print("state changed to:",I_0)
+    #print("state changed to:",I_0)
     return rnglist
 
 
