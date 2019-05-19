@@ -4,14 +4,14 @@ import numpy as np
 #fourth order RK
 #take two first order DE's (functions of t, D, and z) and increment via RK4
 def RK4(fode1,fode2,t0,d0,z0,step):
-    k1=step*fode1(t0,d0,z0)
-    l1=step*fode2(t0,d0,z0)
-    k2=step*fode1(t0+0.5*step,d0+0.5*k1,z0+0.5*l1)
-    l2=step*fode2(t0+0.5*step,d0+0.5*k1,z0+0.5*l1)
-    k3=step*fode1(t0+0.5*step,d0+0.5*k2,z0+0.5*l2)
-    l3=step*fode2(t0+0.5*step,d0+0.5*k2,z0+0.5*l2)
-    k4=step*fode1(t0+step,d0+k3,z0+l3)
-    l4=step*fode2(t0+step,d0+k3,z0+l3)
+    k1=step*fode1(t0, d0, z0)
+    l1=step*fode2(t0, d0, z0)
+    k2=step*fode1(t0+0.5*step, d0+0.5*k1, z0+0.5*l1)
+    l2=step*fode2(t0+0.5*step, d0+0.5*k1, z0+0.5*l1)
+    k3=step*fode1(t0+0.5*step, d0+0.5*k2, z0+0.5*l2)
+    l3=step*fode2(t0+0.5*step, d0+0.5*k2, z0+0.5*l2)
+    k4=step*fode1(t0+step, d0+k3, z0+l3)
+    l4=step*fode2(t0+step, d0+k3, z0+l3)
     #step in D and z
     dnext=d0+(1./6.)*(k1 + 2.*k2 + 2.*k3 + k4)
     znext=z0+(1./6.)*(l1 + 2.*l2 + 2.*l3 + l4)

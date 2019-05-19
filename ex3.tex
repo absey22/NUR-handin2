@@ -13,7 +13,7 @@ Separating the temporal and spatial components in the Second O.D.E. of density p
   \frac{d^2D}{dt^2}+2\frac{\dot{a}}{a}\frac{dD}{dt}=\frac{3}{2}\Omega_0H_0^2\frac{1}{a^3}D
 \end{equation}
 
-Plugging in the scale factor, where the total density $\Omega_0 = \Omega_m$
+This is the linearized density growth equation. Plugging in the scale factor, where the total density $\Omega_0 = \Omega_m$:
 
 \begin{equation}
   \frac{\delta^2D}{\delta t^2}=-\frac{4}{3t}\frac{\delta D}{\delta t}+\frac{2}{3t^2}\Omega_mD
@@ -35,10 +35,29 @@ To use RK4, a second order differential equation like this one must be rewritten
 
 This is just a first order differential equation which RK4 is very good at solving as described above. With the above definition and the simplified Einstein-de Sitter perturbation equation, this leaves the coupled set of first order differential equations:
 
-\begin{align}
+\begin{align*}
   \frac{\delta D}{\delta t} &= g(t,D,z)\\
   \frac{\delta z}{\delta t} &= f(t,D,z)
-\end{align}
+\end{align*}
 
 
-This system can be solved for using the RK4 method in order to integrate the original second order differential equation and find the spatial density perturbation term.
+This system can be solved for using the RK4 method in order to integrate the original second order differential equation and find the spatial density growth term.
+
+Analytically, this was the general solution:
+
+\begin{equation}
+  D(t) = c_1t^{2/3}+c_2/t
+\end{equation}
+
+Using the initial values this leaves the solutions:
+
+\begin{itemize}
+  \item Case 1: $D(t) = 3t^{2/3}$ 
+  \item Case 2: $D(t) =10/t$
+  \item Case 3: $D(t) =  3t^{2/3}+ 2/t$
+\end{itemize} 
+
+
+The first time derivative term ($\propto \(dot{a}/a)(\delta D /\delta t)$) can be interpretted as a frictional term (sometimes called ''Hubble friction''). This means that its sign determines a lot about the growth of structure spatially, in terms of its expansion and collapse. In Case 2, a ''negative frictional term'' imparts a constraint on expansion. The large scale of the structure collapses due to some gravity type effect to a high density on the time scale of tens of years. The opposite condition is represented in Case 1 where a smaller scaled initial spatial perturbation (given by $D(1)$) and a positive frictional term can overcome collapse. An inward pressure term causes the structure to violenty expand to low density. The critical case between these two is Case 3, where a medium sized perturbation with no pressure or gravitational attraction term does not expand or contract. Its density remains constant on the time scale of thousands of years.
+
+https://www.astro.rug.nl/~weygaert/tim1publication/lss2009/lss2009.linperturb.pdf
