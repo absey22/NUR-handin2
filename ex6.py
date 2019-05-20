@@ -3,13 +3,17 @@ import matplotlib.pyplot as plt
 
 
 # ==========================  4   ==========================
-from ex4functions import featurescale,sigmoid,f1score
-from ex4functions import hypothesis,lossfunction,costfunction,gradientdescent
+from ex6functions import featurescale,sigmoid,f1score
+from ex6functions import hypothesis,lossfunction,costfunction,gradientdescent
 
 
 import pandas as pd
-df = pd.read_table("GRBs.txt",skiprows=2)#,usecols=(2,3,4,5,6,7,8,9),dtype=float)
-dataset =  np.array(df)
+#df = pd.read_table("GRBs.txt",skiprows=2)#,usecols=(2,3,4,5,6,7,8,9),dtype=float)
+df=pd.read_csv("GRBs.txt",delim_whitespace=True,skiprows=[1],na_values=[-1])
+print(df)
+
+exit()
+#dataset =  np.array(df)
 
 #Label the data via the T90 threshold:
 # SHORT --> labeleddata[:,:,i] = 0 (T90<10s)
@@ -18,7 +22,8 @@ flags=np.where(dataset[:,2]>10.,1.0,0.0)
 
 
 labeleddata=np.hstack((dataset,flags[:,None]))
-        
+print(labeleddata)
+exit()
 #this training set has 235 training examples
 # or m=235 sample GRBs with variables of redshift,log(M),SFR,log(Z),SSFR,AV a.k.a. n=6 labels, or features
 #dataset=np.loadtxt("GRBs.txt",skiprows=2,usecols=(2,3,4,5,6,7,8))
