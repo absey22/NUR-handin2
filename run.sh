@@ -7,12 +7,12 @@ if [ ! -d "plots" ]; then
   mkdir plots
 fi
 
-echo "get data files"
+echo "Get data files ..."
 
 wget https://home.strw.leidenuniv.nl/~nobels/coursedata/randomnumbers.txt
+wget strw.leidenuniv.nl/~nobels/coursedata/GRBs.txt
 
 
-# Script that returns a plot
 echo "Run the first exercise scripts ..."
 echo "--1(a)--"
 python3 ex1a.py
@@ -26,11 +26,10 @@ echo "--1(d)--"
 python3 ex1d.py
 
 
-# Script that pipes output to a file
 echo "Run the third  exercise script ..."
 python3 ex3.py
 
-echo "Generating the pdf"
+echo "Generating the pdf ..."
 
 pdflatex template.tex
 

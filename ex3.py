@@ -34,16 +34,16 @@ Anl_case3=3*tspace**(2./3.)+2./tspace
 
 plt.title("Linear Structure Growth")
 #NUMERICAL
-plt.plot(case1[0],case1[1],label='Case 1')
-plt.plot(case2[0],case2[1],label='Case 2')
-plt.plot(case3[0],case3[1],label='Case 3')
+plt.plot(case1[0],case1[1],linewidth=3,label='Case 1')
+plt.plot(case2[0],case2[1],linewidth=3,label='Case 2')
+plt.plot(case3[0],case3[1],linewidth=3,label='Case 3')
 #ANALYTICAL
 plt.plot(tspace,Anl_case1,"--",label='Anl Case 1')
 plt.plot(tspace,Anl_case2,"--",label='Anl Case 1')
 plt.plot(tspace,Anl_case3,"--",label='Anl Case 1')
 
 plt.xlabel("time (years)")
-plt.ylabel("Density growth")
+plt.ylabel("D(t)")
 plt.xscale("log")
 plt.yscale("log")
 #plt.arrow(10**2,10**2,0,10**10,width=3,head_length=0.2*10**12,shape='full')
@@ -55,22 +55,23 @@ plt.legend(loc=3)
 
 
 plt.tight_layout(pad=0.4, w_pad=0.5, h_pad=1.0)
-#plt.savefig("./plots/3_spatialdensitygrowth.png")
-plt.show()
-#plt.clf()
-"""
+plt.savefig("./plots/3_spatialdensitygrowth.png")
+plt.clf()
+
+plt.title("Growth at t < 10 years")
 plt.plot(case1[0],case1[1],label='Case 1')
 plt.plot(case2[0],case2[1],label='Case 2')
 plt.plot(case3[0],case3[1],label='Case 3')
 plt.xlabel("time (years)")
-plt.ylabel("Density growth")
+plt.ylabel("D(t)")
 plt.xscale("log")
 plt.yscale("log")
 plt.xlim((8*10**-1,10**1))
-plt.ylim((10**-1,3*10**3))
+plt.ylim((5*10**-1,5*10**1))
 plt.legend()
 
 plt.tight_layout(pad=0.4, w_pad=0.5, h_pad=1.0)
+plt.show()
 plt.savefig("./plots/3_spatialdensitygrowth_neart0.png")
 plt.clf()
-"""
+
