@@ -54,5 +54,6 @@ def f1score(datalabels,regoutput):
     f1=(2.*truepos)/(2.*truepos+trueneg+falsepos+falseneg)
     return f1,truepos,trueneg,falsepos,falseneg
 
-def decisionboundary(x,b,w1,w2): #calcalate bondary, is a line in case of 2 input neurons
-    return -b*(w1 / w2) * x - (b / w2) # (just an equation of a line)
+#from solving equation of line: theta0*1 + theta1*x1 + theta2*x2 = 0.5 = yhat
+def decisionboundary(x,b,w1,w2): #calculate bondary, is a line in case of 2 input neurons
+    return -(w1 / w2) * x + ((0.5-b) / w2) # (just an equation of a line)

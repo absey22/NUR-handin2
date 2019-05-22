@@ -6,6 +6,11 @@ import matplotlib.pyplot as plt
 from ex6functions import featurescale,sigmoid,f1score,decisionboundary
 from ex6functions import hypothesis,lossfunction,costfunction,gradientdescent
 
+#set this to change the combination method of features:
+# 1: w0*1 + w1*x1 + w2*x2
+# 2: w0*1 + w1*x1 + w2*x2 + w3*x1**2 + w4*x2**2 + w5*x1*x2
+polynomialorder=1
+
 
 dataset=np.genfromtxt("GRBs.txt",usecols=(2,3,4,5,6,7,8))
 
@@ -25,23 +30,24 @@ features=dataset[:,:-1].copy()
 m=features.shape[0]; n=features.shape[1]
 
 
-"""
-#testing features by plotting versus each other to see clustering with short/long behavior
-for i in range(n):
-    for j in range(n):
-        if j==1 or i==1:
-            continue
-        if j==i:
-            continue
-        plt.plot(features[:,j][features[:,1]>=10.],features[:,i][features[:,1]>=10.],'ob',label=str(i)+' '+str(j))
-        plt.plot(features[:,j][features[:,1]<10.],features[:,i][features[:,1]<10.],'or',label=str(i)+' '+str(j))
-        plt.xlabel(str(j))
-        plt.ylabel(str(i))
+
+
+feature_names=['Redshift','$T_{90}$','log($M*/M_{☉}$)',"SFR",'log($Z/Z_{☉}$)',"SSFR","AV"]
+
+#examine features by plotting versus each other to see clustering with short/long behavior
+for i in range(1,n):
+    plt.subplot(2,n/2,i)
+    if i==2:
+         plt.subplot(2,n/2,i,facecolor='gold')
+    plt.plot(features[:,0][features[:,1]>=10.],features[:,i][features[:,1]>=10.],'ro',label="Long GRBs")
+    plt.plot(features[:,0][features[:,1]<10.],features[:,i][features[:,1]<10.],'bo',label="Short GRBs")
+    plt.xlabel(feature_names[0])
+    plt.ylabel(feature_names[i])
+    if i==1:
         plt.legend()
-        plt.show()
-
-"""
-
+plt.tight_layout(pad=0.3, w_pad=0.3, h_pad=1.0)
+plt.savefig("./plots/6_featurecomparison.png")
+plt.clf()
 
 
 #Exclude features from training set (and set missing features to zero):
@@ -52,10 +58,7 @@ for i in range(n):
 # behavior in plots is the SFR, log(Z/Z), SSFR, and the AV. As well as clouds within
 # that clustering depending on if the GRB is short or long.
 
-
 # 0=Redshift    1=T90     2=log (M*/M☉)    3=SFR    4=log (Z/Z☉)   5=SSFR    6=AV
-feature_names=['Redshift','$T_{90}$','log($M*/M_{☉}$)','log($Z/Z_{☉}$)',"SSFR","AV"]
-
 exclude_ind=[1,3,4,5,6] # set undesire features to zero so that they dont effect training
 for ind in exclude_ind:
     features[:,ind]=0.0
@@ -63,8 +66,8 @@ for ind in exclude_ind:
 #get the remaining desired features:
 desired_features=np.setdiff1d(np.arange(0,n),exclude_ind)
 
-if len(desired_features)!=2:
-    print("Not setup for more (or less) than 2 inputs.")
+if len(desired_features)!=2 or len(exclude_ind)!=5:
+    print("Training not setup for more (or less) than 2 inputs.")
     exit()
 
 #apply feature scaling to each feature
@@ -77,18 +80,24 @@ for i in range(n):
 
 
 #reshape featues to polynomial
-#features=np.asarray([np.ones(features.shape[0]),features[:,0],features[:,2],features[:,0]**2.,features[:,2]**2.,features[:,0]*features[:,2]]).T
+x1=features[:,desired_features[0]]
+x2=features[:,desired_features[1]]
 
-#for basic linear combination
- # add a column in beginning in order to include a bias weight (theta_0 or p[0], in parameters)
-features=np.hstack((np.ones(m)[:,None],features)) # augment features for a bias
+
+if polynomialorder==1: # both augmented feature matrices for the bias parameter
+    features=np.asarray([np.ones(m),x1,x2]).T  # for basic linear combination
+elif polynomialorder==2:
+    features=np.asarray([np.ones(m),x1,x2,x1**2.,x2**2.,x1*x2]).T # order 2 feature combination
+
+
+
 
 
 
 #LOGISTIC REGRESSION:
 
 #initialize parameters to zero
-parameters=np.zeros(n+1) # +1 for bias!! 
+parameters=np.zeros(features.shape[1]) # +1 for bias!! 
 
 #create initial best estimate yhat:
 h_i=hypothesis(features,parameters)
@@ -122,10 +131,16 @@ while err>err_th:
 #show the results:
 print("Including the bias the parameters found via Gradient Descent in Logistic Regression are:")
 bias=parameters[0]
-wa,wb=parameters[1:][np.nonzero(parameters[1:])] # grab the weights after the bias (will fail with more than 2 input weights in exlcude_ind
-print("Bias:",bias)
-print("Feature",desired_features[0],"weight:",wa)
-print("Feature",desired_features[1],"weight:",wb)
+if polynomialorder==1:
+    wa,wb=parameters[1:][np.nonzero(parameters[1:])] # grab the weights after the bias (will fail with more than 2 input weights in exlcude_ind
+    print("Bias:",bias)
+    print("Feature",desired_features[0],"weight:",wa)
+    print("Feature",desired_features[1],"weight:",wb)
+elif polynomialorder==2:
+    weights=parameters[1:][np.nonzero(parameters[1:])] # grab the weights after the bias (will fail with more than 2 input weights in exlcude_ind
+    print("Bias 0 :",bias)
+    for w in range(len(weights)):
+        print("Weight",w+1,":",weights[w])
 
 plt.suptitle("Logistic Regression Performance: ("+feature_names[desired_features[0]]+" & "+feature_names[desired_features[1]]+")")
 plt.subplot(2,1,1)
@@ -141,7 +156,7 @@ plt.yscale("log")
 plt.legend()
 
 plt.tight_layout(pad=0.4, w_pad=0.5, h_pad=1.0)
-plt.savefig("./plots/6_regressionperformance.png")
+plt.savefig("./plots/6_classificationperformance.png")
 plt.clf()
 
 #calculate the output of the logistic regression which is yhat:
@@ -163,9 +178,10 @@ feature2=unscaledfeatures[:,desired_features[1]]
 feature1space=np.linspace(min(feature1)-0.2,max(feature1)+0.2,100)  # for plotting the decision boundary
 
 plt.title("Classifier Results: "+feature_names[desired_features[0]]+" & "+feature_names[desired_features[1]]+" (and a bias)")
-plt.plot(feature1[T90>=10.],feature2[T90>=10.],'ro',label="long GRBs")
-plt.plot(feature1[T90<10.],feature2[T90<10.],'bo',label="short GRBs")
-plt.plot(feature1space,decisionboundary(feature1space,bias,wa,wb),"--",label='Decision Boundary')
+plt.plot(feature1[T90>=10.],feature2[T90>=10.],'ro',label="Long GRBs")
+plt.plot(feature1[T90<10.],feature2[T90<10.],'bo',label="Short GRBs")
+if polynomialorder==1:
+    plt.plot(feature1space,decisionboundary(feature1space,bias,wa,wb),"--",label='Decision Boundary')
 plt.xlabel(feature_names[desired_features[0]])
 plt.ylabel(feature_names[desired_features[1]])
 plt.legend()
