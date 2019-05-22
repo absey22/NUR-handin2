@@ -154,7 +154,6 @@ plt.clf()
 
 #calculate the output of the logistic regression which is yhat:
 output=sigmoid( features.dot(parameters) )
-print(output)
 #test the classifier's accuracy
 print("---------")
 f1=f1score(labels,output)

@@ -7,9 +7,48 @@ The result of the script is given by:
 
 \lstinputlisting{ex6output.txt}
 
+
+
+A classification problem involves labeling a set of features in a data set and choosing which features have the most effect on the behavior of the desired classification item. To do this we can plot each feature against each other. A feature is then excluded based on when one feature exhibits no variation as a function of the other the whole range their values. Without variation, a feature will probably not add anything to the success of the training.
+
+
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=0.9\linewidth]{./plots/rngquality.png}
-  \caption{\textbf{6}: }
-  \label{fig:rngquality}
+  \includegraphics[width=0.9\linewidth]{./plots/6_featurecomparison.png}
+  \caption{\textbf{6}: The most desireable set of features has been highlighted in gold. It exhibits a significantly large cloud of points away from the missing data which is also split by GRB type. (The $T_{90}$ feature has been exlcuded from the above plot as this  is the quantity we will be using to label the data set and so it cannot be used to train on.)}
+  \label{fig:featurecomparison}
+\end{figure}
+
+The features that which show the least amount of interesting clustering behavior in the plots are the SFR, log($Z/Z_{\odot}$), SSFR, and the AV. Whereas the redshift shows and log($M*/M_{\odot}$) have an interesting cloud of points away from zero which and within that depends on if GRB is short or long.
+
+To perform the logistic regression to classify these GRB's on redshift and log mass, we first need to label the data set by the value of $T_{90}$ based on the 10 second threshold known to identify short from long GRBs. Next, we can solve the problem of missing data by setting all the missing data points to zero. In this way, any associated weights given to those samples of an included feature which have missing data just drop out of the regression. The all but the above mentioned two features are excluded from this training.
+
+Just prior to the actual training, involving gradient descent to find parameters, these features must be scaled. This speeds up the training by making the gradient descent phase converge must faster since mostly all the parameters will be made to lie in the range [-1,1].
+
+(At this point we can choose to place these two features in a basic 1D polynomial, just a linear combination, or a higher order 2D polynomial. The distinction comes in proper fitting. If the order of this polynomial goes much higher than 2, then we risk over fitting. But we also risk under fitting by only taking the simple linear combination of two features.)
+
+Parameters and a bias are intialized to zero (giving three parameters in the case of a bias, and two features in linear combination.)
+
+Logistic regression is based on the formation of a hypothesis, the calculation of a loss function which is a function of how far away that prediction is from the known label, and ultimately a cost function which is what is minimized. This cost function is a function of the loss and is just a sum of the loss functions over all the samples of a feature. The cost in this case in therefore a single value which can be minimized if the parameters (or weights) of each feature are found such that their combination most closely matches the known label (so that the hypothesis for a sample is close to its label and the loss function will be small.)
+
+Gradient descent (GD) is performed while the error (a difference between successive cost functions) remains above a desired thresholh value. Here that is set a $10^{-6}$, but initialized as a very large value. GD takes those parameters, and performs the above described sequence of calculations and determines slightly alters the parameter values in the hopes of minimizing the cost in each iteration. With successful GD, the error should coverge down to the threshold and the cost function should also converge down to some value.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/6_classificationperformance.png}
+  \caption{\textbf{6}: The cost function converges down to a minimum after a couple hundred iterations of gradient descent.}
+  \label{fig:classificationperformance}
+\end{figure}
+
+The success of the training (to find the proper weights for each samples' features) can be determined via the activation function, which is the sigmoid in this case. Applying the sigmoid function to the dot product of the weights and features (accounting for the bias) gives the result of what the training algorithm determine to be a short or long GRB (by outputting a value between 0 and 1, whereas the labels are 0 or 1.) Further, a test such as the F1-score quantifies how many true or false identifications the classifier makes given the known labels for each GRB sample.
+
+In this case, the training seems to be failing since it is accepting every single sample as a fast GRB. The F1 score test shows that there are zero true negatives, whereas it is known that there are 185 long GRBs and 50 short GRBs.
+
+And a decision boundary can be constructed based on the line formed by the linear combination of features. It is the boundary where the hypothesis is equal to 0.5, such that anything higher than that up to 1 is a positive idenfication and anything lower is a negative. When plotted against eachother, this linear combination is just the equation for a line which has an ''x-intercept'', a ''y-intercept'', and a slope which can be solved for and plotted.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/6_decisionboundary.png}
+  \caption{\textbf{6}: This boundary dosen't actually seem to be correct. Whereas the F1 score saw that all of the identifications are true positives, the decision boundary does not agree with this graphically. It still shows that there are both types of GRBs on either size of the decision boundary. This could be because my approach of solving the equation of a line is not true in logistic regression where you apply the activation function to the feature combination.}
+  \label{fig:decisionboundary}
 \end{figure}

@@ -47,11 +47,11 @@ def f1score(datalabels,regoutput):
             falsepos+=1
     checksum=truepos+trueneg+falsepos+falseneg
     print("F1-score results:")
-    print("TP:",truepos,", TN:",trueneg)
-    print("FP:",falsepos,", FN:",falseneg)
+    print("TP:",truepos, "FP:",falsepos)
+    print("FN:",falseneg,"TN:",trueneg )
     if checksum!=len(regoutput):
         print("checksum failed")
-    f1=(2.*truepos)/(2.*truepos+trueneg+falsepos+falseneg)
+    f1=(2.*truepos)/((2.*truepos)+trueneg+falsepos+falseneg)
     return f1,truepos,trueneg,falsepos,falseneg
 
 #from solving equation of line: theta0*1 + theta1*x1 + theta2*x2 = 0.5 = yhat

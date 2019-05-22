@@ -1,22 +1,19 @@
+The script used to generate the results is given by:
 
 \lstinputlisting{ex3.py}
 
-In an Einstein-de Sitter Universe where the only component in the equations of state is matter with density $\Omega_m$=1, the scale factor can be found via the Friedmann Equation as
+In an Einstein-de Sitter Universe where the only component in the equations of state is matter with density $\Omega_m$=1, the scale factor can be found via the Friedmann Equation as 2/3 power law in time.
 
-\begin{equation}
-  a(t) = \left(\frac{3}{2}H_0t\right)^{2/3}
-\end{equation}
-
-Separating the temporal and spatial components in the Second O.D.E. of density perturbations $\delta = D(t)\Delta(x)$, the differential equation can be written in just the spatial component as:
+By separating the temporal and spatial components in the Second O.D.E. of density perturbations $\delta = D(t)\Delta(x)$, the differential equation can be written in just the spatial component as:
 
 \begin{equation}
   \frac{d^2D}{dt^2}+2\frac{\dot{a}}{a}\frac{dD}{dt}=\frac{3}{2}\Omega_0H_0^2\frac{1}{a^3}D
 \end{equation}
 
-This is the linearized density growth equation. Plugging in the scale factor, where the total density $\Omega_0 = \Omega_m$:
+This is the linearized density growth equation. Plugging in the scale factor (where the total density $\Omega_0 \rightarrow \Omega_m$):
 
 \begin{equation}
-  \frac{\delta^2D}{\delta t^2}=-\frac{4}{3t}\frac{\delta D}{\delta t}+\frac{2}{3t^2}\Omega_mD
+  \frac{\delta^2D}{\delta t^2}=-\frac{4}{3t}\frac{\delta D}{\delta t}+\frac{2\Omega_m}{3t^2}D
 \end{equation}
 
 Meaning this second order differential equation can be written in the form
@@ -25,15 +22,15 @@ Meaning this second order differential equation can be written in the form
   \frac{\delta^2D}{\delta t^2}=f\left(t,D,\frac{\delta D}{\delta t}\right)
 \end{equation}
 
-Something like Euler's method for integrating ODE's leads to a lot of error (on the order of the step size). This is due to local truncations adding up in each step of the numerical integration. A higher order method such as Runge Kutta mitigates this truncation error due to its basic estimation of the next point from a projection forward using the current slope. Whereas Runge Kutta methods combine calculations of the slope at intermediate points between step sizes in the integration of the ODE. Fourth order RK gives the most computationally cost efficient solution, and succeeds almost always.
+Something like Euler's method for integrating ODE's leads to a lot of error (on the order of the step size). This is due to local truncations adding up in each step of the numerical integration. In this case Euler's method would probably suffice given the smoothness of the analytical solution(s). In general, a higher order method such as Runge Kutta mitigates this truncation error by stepping to the next point based on a weighted average of slopes at the midpoint between steps. Fourth order RK gives the most computationally cost efficient solution, and succeeds almost always. That is why RK4 was chosen over simple Euler's.
 
-To use RK4, a second order differential equation like this one must be rewritten as as two coupled first order differential equations. Therefore define
+To use RK4, a second order differential equation like this one must be rewritten as as two coupled first order differential equations. Therefore, define:
 
 \begin{equation}
   \frac{\delta D}{\delta t} \equiv z
 \end{equation}
 
-This is just a first order differential equation which RK4 is very good at solving as described above. With the above definition and the simplified Einstein-de Sitter perturbation equation, this leaves the coupled set of first order differential equations:
+This is just a first order differential equation which RK4 is very good at solving as described above. With the above definition and the simplified Einstein-de Sitter spatial density perturbation equation, this leaves the coupled set of first order differential equations:
 
 \begin{align*}
   \frac{\delta D}{\delta t} &= g(t,D,z)\\
@@ -43,13 +40,13 @@ This is just a first order differential equation which RK4 is very good at solvi
 
 This system can be solved for using the RK4 method in order to integrate the original second order differential equation and find the spatial density growth term.
 
-Analytically, this was the general solution:
+Analytically, we can find the general solution to the second order differential equation above as:
 
 \begin{equation}
   D(t) = c_1t^{2/3}+c_2/t
 \end{equation}
 
-Using the initial values this leaves the solutions:
+Solving for the coefficients using the initial values this leaves the solutions:
 
 \begin{itemize}
   \item Case 1: $D(t) = 3t^{2/3}$ 
@@ -57,8 +54,9 @@ Using the initial values this leaves the solutions:
   \item Case 3: $D(t) =  3t^{2/3}+ 2/t$
 \end{itemize} 
 
+The first time derivative term ($\propto (\dot{a}/a)(\delta D /\delta t)$) can be interpretted as a frictional term (sometimes called ''Hubble friction''). This means that its sign determines the behavior of the spatial growth of structure, in terms of expansion or collapse.
 
-The first time derivative term ($\propto \(dot{a}/a)(\delta D /\delta t)$) can be interpretted as a frictional term (sometimes called ''Hubble friction''). This means that its sign determines a lot about the growth of structure spatially, in terms of its expansion and collapse. In Case 2, a ''negative frictional term'' imparts a constraint on expansion. The large scale of the structure collapses due to some gravity type effect to a high density on the time scale of tens of years. The opposite condition is represented in Case 1 where a smaller scaled initial spatial perturbation (given by $D(1)$) and a positive frictional term can overcome collapse. An inward pressure term causes the structure to violenty expand to low density. The critical case between these two is Case 3, where a medium sized perturbation with no pressure or gravitational attraction term does not expand or contract. Its density remains constant on the time scale of thousands of years.
+The plots show two growing modes (Case 1 \& Case 3) and a decaying modes (Case 2). In Case 2, a ''negative frictional term'' put a constraint on expansion. This means that its large initial size and inability to expand leads it to collapse gravitationally (and exponentially) to high density on the time scale of tens of years. The opposite condition is represented in Case 1 where a smaller scale initial spatial perturbation (given by $D(1)$) but a positive frictional means the perturbation only grows with time, and exponentially so. An inward pressure term causes the structure to violenty expand to low density. Case 3 is just at the limit between these two where it initially looks like it could expand or collapse at very early times, but it is just large enough that it wants to expand exponentially after a few tens of years.
 
-https://www.astro.rug.nl/~weygaert/tim1publication/lss2009/lss2009.linperturb.pdf
-https://math.stackexchange.com/questions/721076/help-with-using-the-runge-kutta-4th-order-method-on-a-system-of-2-first-order-od
+%https://www.astro.rug.nl/~weygaert/tim1publication/lss2009/lss2009.linperturb.pdf
+%https://math.stackexchange.com/questions/721076/help-with-using-the-runge-kutta-4th-order-method-on-a-system-of-2-first-order-od
