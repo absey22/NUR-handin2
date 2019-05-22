@@ -1,4 +1,10 @@
+*.tex#
+
 *.*~
+
+slf4j.simpleLogger.log
+
+colliding.hdf5
 
 randomnumbers.txt
 
