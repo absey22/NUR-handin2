@@ -55,14 +55,13 @@ plt.legend(loc=3)
 
 
 plt.tight_layout(pad=0.4, w_pad=0.5, h_pad=1.0)
-plt.show()
 plt.savefig("./plots/3_spatialdensitygrowth.png")
 plt.clf()
 
 plt.title("Growth at t < 10 years")
-plt.plot(case1[0],case1[1],label='Case 1')
-plt.plot(case2[0],case2[1],label='Case 2')
-plt.plot(case3[0],case3[1],label='Case 3')
+plt.plot(case1[0],case1[1],color='r',label='Case 1')
+plt.plot(case2[0],case2[1],color='g',label='Case 2')
+plt.plot(case3[0],case3[1],color='c',label='Case 3')
 plt.xlabel("time (years)")
 plt.ylabel("D(t)")
 plt.xscale("log")
@@ -72,8 +71,7 @@ plt.ylim((5*10**-1,5*10**1))
 plt.legend()
 
 plt.tight_layout(pad=0.4, w_pad=0.5, h_pad=1.0)
-plt.show()
-plt.savefig("./plots/3_spatialdensitygrowth_neart0.png")
+plt.savefig("./plots/3_spatialdensitygrowth_near_t0.png")
 plt.clf()
 
 
@@ -92,6 +90,5 @@ plt.legend()
 
 
 plt.tight_layout(pad=0.4, w_pad=0.5, h_pad=1.0)
-plt.show()
 plt.savefig("./plots/3_spatialdensitygrowth_residuals.png")
 plt.clf()
