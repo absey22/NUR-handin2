@@ -11,6 +11,7 @@ echo "Get data files ..."
 
 wget https://home.strw.leidenuniv.nl/~nobels/coursedata/randomnumbers.txt
 wget strw.leidenuniv.nl/~nobels/coursedata/GRBs.txt
+wget strw.leidenuniv.nl/~nobels/coursedata/colliding.hdf5
 
 
 echo "Run the first exercise scripts ..."

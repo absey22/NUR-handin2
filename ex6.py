@@ -3,112 +3,172 @@ import matplotlib.pyplot as plt
 
 
 # ==========================  4   ==========================
-from ex6functions import featurescale,sigmoid,f1score
+from ex6functions import featurescale,sigmoid,f1score,decisionboundary
 from ex6functions import hypothesis,lossfunction,costfunction,gradientdescent
 
 
-import pandas as pd
-#df = pd.read_table("GRBs.txt",skiprows=2)#,usecols=(2,3,4,5,6,7,8,9),dtype=float)
-df=pd.read_csv("GRBs.txt",delim_whitespace=True,skiprows=[1],na_values=[-1])
-print(df)
+dataset=np.genfromtxt("GRBs.txt",usecols=(2,3,4,5,6,7,8))
 
-exit()
-#dataset =  np.array(df)
 
+#get labels of binary classification
 #Label the data via the T90 threshold:
-# SHORT --> labeleddata[:,:,i] = 0 (T90<10s)
-# LONG=  --> labeleddata[:,:,i] = 1 (T90>10s)
-flags=np.where(dataset[:,2]>10.,1.0,0.0)
+# SHORT --> labeleddata[:,0] = 0. (T90<10s)
+# LONG=  --> labeleddata[:,0] = 1. (T90>=10s)
+labels=np.where(dataset[:,1]>=10.,1.0,0.0)
 
+#append labels to last column of data --> labeled training set
+dataset=np.hstack((dataset,labels[:,None]))
 
-labeleddata=np.hstack((dataset,flags[:,None]))
-print(labeleddata)
-exit()
 #this training set has 235 training examples
-# or m=235 sample GRBs with variables of redshift,log(M),SFR,log(Z),SSFR,AV a.k.a. n=6 labels, or features
-#dataset=np.loadtxt("GRBs.txt",skiprows=2,usecols=(2,3,4,5,6,7,8))
-
-features=dataset[:,1:]
-m=features.shape[0]
-n=features[0].shape[0]
+# or m=235 sample GRBs with variables of redshift,log(M),SFR,log(Z),SSFR,AV a.k.a. n=7 labels, or features
+features=dataset[:,:-1].copy()
+m=features.shape[0]; n=features.shape[1]
 
 
+"""
+#testing features by plotting versus each other to see clustering with short/long behavior
+for i in range(n):
+    for j in range(n):
+        if j==1 or i==1:
+            continue
+        if j==i:
+            continue
+        plt.plot(features[:,j][features[:,1]>=10.],features[:,i][features[:,1]>=10.],'ob',label=str(i)+' '+str(j))
+        plt.plot(features[:,j][features[:,1]<10.],features[:,i][features[:,1]<10.],'or',label=str(i)+' '+str(j))
+        plt.xlabel(str(j))
+        plt.ylabel(str(i))
+        plt.legend()
+        plt.show()
 
-#feature scaling
-for i in range(len(features[0,:])):
+"""
+
+
+
+#Exclude features from training set (and set missing features to zero):
+# feature is excluded based on plotting features against each other.
+# when one feature exhibits no change for variation of the other over the whole range
+# of it value, then it will probably not add anything to the success of the training.
+# the features that change the least and show the least amount of interesting clustering
+# behavior in plots is the SFR, log(Z/Z), SSFR, and the AV. As well as clouds within
+# that clustering depending on if the GRB is short or long.
+
+
+# 0=Redshift    1=T90     2=log (M*/M☉)    3=SFR    4=log (Z/Z☉)   5=SSFR    6=AV
+feature_names=['Redshift','$T_{90}$','log($M*/M_{☉}$)','log($Z/Z_{☉}$)',"SSFR","AV"]
+
+exclude_ind=[1,3,4,5,6] # set undesire features to zero so that they dont effect training
+for ind in exclude_ind:
+    features[:,ind]=0.0
+    
+#get the remaining desired features:
+desired_features=np.setdiff1d(np.arange(0,n),exclude_ind)
+
+if len(desired_features)!=2:
+    print("Not setup for more (or less) than 2 inputs.")
+    exit()
+
+#apply feature scaling to each feature
+unscaledfeatures=features.copy()
+for i in range(n):
+    if i in exclude_ind: # dont bother calling the feature scaling on the excluded features
+        continue
     features[:,i]=featurescale(features[:,i])
 
 
 
 #reshape featues to polynomial
-features=np.asarray([np.ones(features.shape[0]),features[:,0],features[:,1],features[:,0]**2.,features[:,1]**2.,features[:,0]*features[:,1]]).T
-print(features[0])
+#features=np.asarray([np.ones(features.shape[0]),features[:,0],features[:,2],features[:,0]**2.,features[:,2]**2.,features[:,0]*features[:,2]]).T
+
 #for basic linear combination
-#features=np.hstack((np.ones(features.shape[0])[:,None],features))  # add a column in beginning to account for shape of having a bias weight (theta_0 or p[0], in parameters)
-
-
-#initialize parameters
-parameters=np.asarray([0.,0.,0.,0.,0.,0.])
-#parameters=np.asarray([0.,0.,0.])
+ # add a column in beginning in order to include a bias weight (theta_0 or p[0], in parameters)
+features=np.hstack((np.ones(m)[:,None],features)) # augment features for a bias
 
 
 
+#LOGISTIC REGRESSION:
 
-
- #get labels of binary classification
-labels=dataset[:,-1]
-
+#initialize parameters to zero
+parameters=np.zeros(n+1) # +1 for bias!! 
 
 #create initial best estimate yhat:
 h_i=hypothesis(features,parameters)
 #compute the initial cost function:
 cost_i=costfunction(lossfunction(h_i,labels))
 
-err_th=1e-6
-err=cost_i
-errlist=[]
-costfun=[]
+err_th=1e-6 # small threshold from T12.1
+err=1e4 # initialize error to arbitrary large value
+errlist=[err] # for terminating gradient descent
+costfun=[cost_i] # for plotting
 
-#update parameters via GD
+#update parameters via GD in logistic reg
 while err>err_th:
     #compute new parameters:
     parameters=gradientdescent(parameters,h_i,labels,features)
-    print(parameters)
-    #create new estimate yhat:
+    #create new estimate yhat from those parameters:
     h_new=hypothesis(features,parameters)
-    #print(h_new[::int(len(h_new)/10)])
-    #compute the loss function:
+    #compute the loss function from that estimation:
     loss_new=lossfunction(h_new,labels)
     #calculate the resulting cost:
     cost_new=costfunction(loss_new)
-    
-    err=abs(cost_i-cost_new)
-    #err=cost_new
+    #calculate error in this iteratoin
+    err=abs(cost_new-cost_i)
+    #store error, cost
     errlist.append(err)
     costfun.append(cost_new)
-    #update cost
+    #update cost,current hypothesis
     cost_i=cost_new
-    #update the current hypothesis
     h_i=h_new
-print(parameters)
 
-plt.plot(np.arange(len(errlist)),errlist,label='err')
-plt.plot(np.arange(len(costfun)),costfun,label='cost')
+#show the results:
+print("Including the bias the parameters found via Gradient Descent in Logistic Regression are:")
+bias=parameters[0]
+wa,wb=parameters[1:][np.nonzero(parameters[1:])] # grab the weights after the bias (will fail with more than 2 input weights in exlcude_ind
+print("Bias:",bias)
+print("Feature",desired_features[0],"weight:",wa)
+print("Feature",desired_features[1],"weight:",wb)
+
+plt.suptitle("Logistic Regression Performance: ("+feature_names[desired_features[0]]+" & "+feature_names[desired_features[1]]+")")
+plt.subplot(2,1,1)
+plt.plot(np.arange(len(costfun)),costfun,label='Cost')
+plt.ylabel("J($\Theta$)")
 plt.legend()
-plt.show()
+plt.subplot(2,1,2)
+plt.plot(np.arange(len(errlist)),errlist,color='C1',label='Error')
+plt.hlines(err_th,0,len(errlist),color='k',linestyle=":",label="Desired Convergence")
+plt.xlabel("Iteration")
+plt.ylabel("J($\Theta_{new}$) - J($\Theta_{i}$)")
+plt.yscale("log")
+plt.legend()
 
+plt.tight_layout(pad=0.4, w_pad=0.5, h_pad=1.0)
+plt.savefig("./plots/6_regressionperformance.png")
+plt.clf()
 
-
+#calculate the output of the logistic regression which is yhat:
 output=sigmoid( features.dot(parameters) )
 
-print(output.shape)
-
-
-plt.plot(labels,output,'ro')
-plt.show()
-
-
-
+#test the classifier's accuracy
+print("---------")
 f1=f1score(labels,output)
-print(f1)
+print("Using",len(parameters)-len(exclude_ind),"weight(s) in logistic regression (including a bias) the resulting F1-score")
+print("of this classifier is",round(100*f1[0],1),"%. It correctly classified as long GRBs",f1[1],"of")
+print("the known",np.count_nonzero(labels==1.0),"long GRBs (from a total of",m,"samples of GRBs.)")
 
+
+#the resulting decision boundary
+
+T90=dataset[:,1]
+feature1=unscaledfeatures[:,desired_features[0]]; 
+feature2=unscaledfeatures[:,desired_features[1]]
+feature1space=np.linspace(min(feature1)-0.2,max(feature1)+0.2,100)  # for plotting the decision boundary
+
+plt.title("Classifier Results: "+feature_names[desired_features[0]]+" & "+feature_names[desired_features[1]]+" (and a bias)")
+plt.plot(feature1[T90>=10.],feature2[T90>=10.],'ro',label="long GRBs")
+plt.plot(feature1[T90<10.],feature2[T90<10.],'bo',label="short GRBs")
+plt.plot(feature1space,decisionboundary(feature1space,bias,wa,wb),"--",label='Decision Boundary')
+plt.xlabel(feature_names[desired_features[0]])
+plt.ylabel(feature_names[desired_features[1]])
+plt.legend()
+
+plt.tight_layout(pad=0.4, w_pad=0.5, h_pad=1.0)
+plt.savefig("./plots/6_decisionboundary.png")

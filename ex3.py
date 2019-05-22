@@ -26,7 +26,7 @@ case3=intode(g,f,RK4,start=t0,stop=t_end,step=h,initcond=(5.,0.))
 #using analytical method. (wolfram)
 #analytical general solution: D(t)=at^2/3+b/t
 # a,b found via plugging in initial values.
-tspace=np.linspace(t0,t_end,int((t_end-t0)/h))
+tspace=np.linspace(t0,t_end,int((t_end-t0)/h)+1)
 Anl_case1=3*tspace**(2./3.)
 Anl_case2=10./tspace
 Anl_case3=3*tspace**(2./3.)+2./tspace
@@ -34,13 +34,13 @@ Anl_case3=3*tspace**(2./3.)+2./tspace
 
 plt.title("Linear Structure Growth")
 #NUMERICAL
-plt.plot(case1[0],case1[1],linewidth=3,label='Case 1')
-plt.plot(case2[0],case2[1],linewidth=3,label='Case 2')
-plt.plot(case3[0],case3[1],linewidth=3,label='Case 3')
+plt.plot(case1[0],case1[1],color='r',linewidth=3.5,label='Case 1')
+plt.plot(case2[0],case2[1],color='g',linewidth=3.5,label='Case 2')
+plt.plot(case3[0],case3[1],color='c',linewidth=3.5,label='Case 3')
 #ANALYTICAL
-plt.plot(tspace,Anl_case1,"--",label='Anl Case 1')
-plt.plot(tspace,Anl_case2,"--",label='Anl Case 1')
-plt.plot(tspace,Anl_case3,"--",label='Anl Case 1')
+plt.plot(tspace,Anl_case1,color='b',linestyle="--",label='Anl Case 1')
+plt.plot(tspace,Anl_case2,color='y',linestyle="--",label='Anl Case 2')
+plt.plot(tspace,Anl_case3,color='r',linestyle="--",label='Anl Case 3')
 
 plt.xlabel("time (years)")
 plt.ylabel("D(t)")
@@ -55,6 +55,7 @@ plt.legend(loc=3)
 
 
 plt.tight_layout(pad=0.4, w_pad=0.5, h_pad=1.0)
+plt.show()
 plt.savefig("./plots/3_spatialdensitygrowth.png")
 plt.clf()
 
@@ -75,3 +76,22 @@ plt.show()
 plt.savefig("./plots/3_spatialdensitygrowth_neart0.png")
 plt.clf()
 
+
+#plot the residuals between analytical and numerical
+plt.title("Residuals (Analytical - Numerical)")
+plt.plot(tspace,Anl_case1-case1[1],color='r',linestyle="--",label='Case 1 Residual')
+plt.ylabel("$\Delta$D(t)")
+plt.plot(tspace,Anl_case2-case2[1],color='g',linestyle="--",label='Case 2 Residual')
+plt.ylabel("$\Delta$D(t)")
+plt.plot(tspace,Anl_case3-case3[1],color='c',linestyle="--",label='Case 3 Residual')
+plt.xlabel("time (years)")
+plt.ylabel("$\Delta$D(t)")
+#plt.xscale("log")
+#plt.yscale("log")
+plt.legend()
+
+
+plt.tight_layout(pad=0.4, w_pad=0.5, h_pad=1.0)
+plt.show()
+plt.savefig("./plots/3_spatialdensitygrowth_residuals.png")
+plt.clf()
