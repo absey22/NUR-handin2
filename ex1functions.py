@@ -70,7 +70,7 @@ def GaussianPDF(x,mu=0.0,s=1.0):
 
 
 # ==========================  1(c)   ==========================
-from math import exp,erf
+from math import exp
 
 #find area under GaussianPDF up to the point x.
 def GaussianCDF(x,mu=0.0,s=1.0):
@@ -84,24 +84,21 @@ def GaussianCDF(x,mu=0.0,s=1.0):
     #return trapezoidrule(22,-5*s,x) # integrate from -5sigma to the desired x in 22 panels
                                     # fewer panels used otherwise calculations become slow
     #OR
-    return 0.5*( 1.-erf( -(x-mu)/(s*2**0.5) ) )
+    #return 0.5*( 1.-erf( -(x-mu)/(s*2**0.5) ) )
     #OR
     # constants yields max error 1.5e-7 (via textbook: Abramowitz and Stegun, 1964)
-"""
     p=0.3275911 
     a1=0.254829592; a2=-0.284496736; a3=1.421413741; a4=-1.453152027; a5=1.061405429
     def myerfx(C):
         t=1./(1.+p*C)
         erfx=1.-(a1*t+a2*t**2.+a3*t**3.+a4*t**4.+a5*t**5.)*exp(-C**2.)
         return erfx
-    print("cdffunc",x)
     if x>=0.0:
         cdf=0.5*( 1.+myerfx( (x-mu)/(s*2**0.5) ) )
     elif x<0.0:
         cdf=0.5*( 1.-myerfx( -(x-mu)/(s*2**0.5) ) )
-    print("cdf",cdf)
     return cdf
-"""
+
 
 #quicksort algorithm on some data
 def quicksort(data):

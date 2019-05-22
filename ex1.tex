@@ -1,10 +1,73 @@
 % EXERCISE 1(a)
 
 \begin{subsection}{Sub-question 1(a)}
+
+The script used to generate the results is given by:
   
 \lstinputlisting{ex1a.py}
 
-The KS pdf is usually calculated in terms of its cdf which is given by Press et al.
+The result of the script is given by:
+
+\lstinputlisting{ex1aoutput.txt}
+
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/1a_uniformityanalysis.png}
+  \caption{\textbf{1a}: In the \textbf{top left panel} we see the result of plotting 1000 sequential generations. There does not appear to be any correlations in the plot. The random numbers have been normalized from their nominal $2^{64}-1$ total range. By dividing by this, the output float is normalized to between 0 and 1. The \textbf{top right panel} shows the distribution of uniform draw in each iteration of the generator. You should expect to see that half of them fall about 0.5 and half below; and that there is no cycle noticeable in this generation process (i.e. we dont see the period of the generator in these 1,000 draws). The \textbf{bottom center panel} demonstrates the difference between the quality of my generator compared to an ideal uniform (flat) distribution. 1,000,000 values are generated and put into a histogram. The uncertainty of the poission process is shown as dotted lines above and below the Poissionian mean (black dotted line). The distance of each bin's height from the ideal demonstrates that only a few bins fall outside of 1-$\sigma$ of this counting process.}
+  \label{fig:rngquality}
+\end{figure}
+
+
+\end{subsection}
+
+
+\FloatBarrier
+% EXERCISE 1(b)
+
+\begin{subsection}{Sub-question 1(b)}
+
+The script used to generate the results is given by:
+  
+\lstinputlisting{ex1b.py}
+
+The Box-Muller transform takes two uniformly drawn variates and can output two standard normal variates. It works by assuming that your normally drawn variates are \textit{i.d.d} such that their product is a simple exponential of a sum that goes like:
+
+\begin{equation}
+  \propto \text{exp}(-\frac{1}{2\sigma^2}(x-\mu)^2+(y-\mu)^2)
+\end{equation}
+
+Assuming a symmetric case where $\mu$ is the mean of a 2 dimensional gaussian which is the same on both axes. This expression must be integrated in order to marginalize over the distance from the origin. Doing so is a complex integral. It can be simplified by working in polar coordinates with $x-\mu \equiv r\text{cos}\theta$ (similarly $y-\mu \equiv r\text{sin}\theta$) such that the integral reduces to the Gaussian form which has a tabulated solution.
+
+\begin{equation}
+  \propto \int_0^R\text{exp}(-\frac{-r^2}{2\sigma^2}rdr = 1-\text{exp}^{-R^2/2\sigma^2} \equiv 1 - \textit{U}
+\end{equation}
+
+The solution of this is then $R=(-2\text{ln}\textit{U})^{1/2}$ (and an angular component). These can be combined to generate standard normal variates (which can then me transformed to a new mean and standard deviation simply. See \texttt{BoxMuller()} in \textt{ex1functions.py} above.)
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/1b_gaussiancomparison.png}
+  \caption{\textbf{1b}: A pdf normalized (multiplying by $(2\pi\sigma)^{-1/2}$) theoretical Gaussian compared to my Box-Muller transformed uniform variates. Using bins on the scale of ten times the standard deviation gives the smoothest result where both tails are populated by bins and there are not any excessively large or small bins near the mean (despite the two central bins).}
+  \label{fig:gaussiancomparison}
+\end{figure}
+
+
+
+\end{subsection}
+
+\FloatBarrier
+% EXERCISE 1(c)
+
+\begin{subsection}{Sub-question 1(c)}
+
+The script used to generate the results is given by:
+  
+\lstinputlisting{ex1c.py}
+
+The goal of a statistical test like the K-S Test is to prove that the null hypothesis; that the distribution of some data matches the proposed distribution. In this case, that means that this data (generated via the Box-Muller transformation) follows a theoretical normal distribution. The K-S test is accomplished by finding the maximum distance between Gaussian CDF and data CDF. This K-S statistic (called D) is useful because it has a known probability density function. It can be calculated as shown in Section 6.14 of Press et al., and a p-value of the signficance of the D of this observation can therefore be found from that distribution. That p-value (which will be calculated) is the probability that a value as large as D would occur if data was indeed drawn from the theoretical cdf. If the p-value is greater than or above a chosen significance level (here various levels as low as 4-$\sigma$ will be explored), then we will \texit{not} reject the hypothesis that the data come from the given distribution; if it falls below the threshold we can say it make not have been drawn from that distribution.
+
+The KS pdf is usually calculated in terms of its cdf which is given by Press et al. as:
 
 \begin{equation}
   1-2\sum_{j=1}^{inf}(-1)^{j-1}\text{exp}(-2j^2z^2)
@@ -18,43 +81,126 @@ Then the first three terms (j=1,2,3) of the complementary distribution function 
   1-2\left( \text{exp}(-2z^2) - \text{exp}(-4z^2) + \text{exp}(-18z^2)\right)
 \end{equation}
 
-\end{subsection}
-
-
-% EXERCISE 1(b)
-
-\begin{subsection}{Sub-question 1(b)}
-  
-\lstinputlisting{ex1b.py}
-
-
-\end{subsection}
-
-
-% EXERCISE 1(c)
-
-\begin{subsection}{Sub-question 1(c)}
-  
-\lstinputlisting{ex1c.py}
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/1c_kstest.png}
+  \caption{\textbf{1c}: The \textbf{lower Panel} shows the result of succesive slicing of an array of $10^5$ standard normal variates is done and the resulting lists of numbers are each put through the K-S test. This takes the list, sorts it, and evaluates at each abscissa the CDF at that point. It compare how far away it lies from an actually Gaussian CDF and in each iteration over the sorted array checks to see if the current distance is larger than the previous distance. The algorithm is compared to (and matches exactly with) SciPy's KS test function. You should expect the value of D to decrease with increasing number of points because you're essentially smoothing out the rough ''corners'' of the data's CDF with increasing number of points. The \textbf{upper panel} shows the calculation of the corresponding p-value which is a function of the D-value of the lower panel. It also accounts for the number of points. The p-value here lies well above the 2-$\sigma$ level for all $10^5$ and in between. Thus my normal variates (based on my uniform number generator) agree with the null hypothesis and therefore indeed follow a standard normal distribution.}
+  \label{fig:kstest}
+\end{figure}
 
 
 \end{subsection}
 
-
+\FloatBarrier
 % EXERCISE 1(d)
 
 \begin{subsection}{Sub-question 1(d)}
+
+The script used to generate the results is given by:
   
 \lstinputlisting{ex1d.py}
 
 
+The Kuiper test's statistic is V = D+ + D- is a statistic that is invariant under all shifts
+and parametrizations on a circle created by ''wrapping'' around the x-axis. As such, the Kuiper will be robust against large peaks near the edges of the distribution, or in other words when the same distribution's mean is shifted towards one end of the axis.
+
+The kuiper source code in AstroPy explains: ''Stephens 1970 claims this is more effective than the KS at detecting changes in the variance of a distribution; the KS is (he claims) more sensitive at detecting changes in the mean. D should normally be independent of the shape of CDF.''
+
+Therefore doing the Kuiper test with a standard normal Gaussian should again accept the null hypothesis for my Box Muller generated random variates.
+
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/1d_kuipertest.png}
+  \caption{\textbf{1d}: Again, the \textbf{lower Panel} shows the result of succesive slicing of an array of $10^5$ standard normal variates, except this time the Kuiper Test is performed. Similarly, it sorts it, and evaluates the CDF but in each iteration stores both the largest negative and largest positive distances instead. The algorithm is again also compared to SciPy's KS test function (modified in calling to return separate D+ and D- statistics, see the below figure for these two statistics separately) D should again decrease with increasing number of points. The \textbf{upper panel} shows the calculation of the corresponding p-values. In my algorithm, the p-value seems to dip below the 2-$\sigma$ level for intermediate numbers of points, whereas SciPy's value's do not. Although this only happens for exactly 1,000 points and no where else. Scipy's test still says that the null hypothesis is accepted and my data follows a standard normal distribution.}
+  \label{fig:kuipertest}
+\end{figure}
+
+
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/1d_kuipertest_lohi.png}
+  \caption{\textbf{1d}: A comparison of Scipy's KS and my Kuiper test algorithms for the two statistics, D+ and D-. They both do decrease with increasing number of points and are similar.}
+  \label{fig:kuipertest2}
+\end{figure}
+
+
 \end{subsection}
 
+
+\FloatBarrier
 % EXERCISE 1(e)
 
 \begin{subsection}{Sub-question 1(e)}
+
+The script used to generate the results is given by:
   
 \lstinputlisting{ex1e.py}
 
+A p-value will be used to determine if these data sets can be accepted in light of the null hypothesis that they follow a standard normal distribution. For those data sets that do not abide by the null hypothesis, we should expect that the p-value will fall below at least the 2-$\sigma$ level when the number of points gets high enough. 
+
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.8\linewidth]{./plots/1e_kuipertest_data1.png}
+  \caption{\textbf{1e}: Despite the value of the V statistic decreasing with increasing number of points as is expected, the p-value for accepting the null hypothesis that this data set follows ( or is drawn from) a standard normal distribution falls off quickly with number of points.}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.8\linewidth]{./plots/1e_kuipertest_data2.png}
+  \caption{\textbf{1e}: An apparently uniform distribution is definitely not standard normal.}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.8\linewidth]{./plots/1e_kuipertest_data3.png}
+  \caption{\textbf{1e}: }
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.8\linewidth]{./plots/1e_kuipertest_data4.png}
+  \caption{\textbf{1e}: Definitely passes the Kuiper test and so follows a standard normal distribution.}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.8\linewidth]{./plots/1e_kuipertest_data5.png}
+  \caption{\textbf{1e}: This distribution is too flat everywhere to be drawn from a standard normal distribution.}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.8\linewidth]{./plots/1e_kuipertest_data6.png}
+  \caption{\textbf{1e}: Resembles the null hypothesis despite strange discontinuities at a couple points along the x-axis.}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.8\linewidth]{./plots/1e_kuipertest_data7.png}
+  \caption{\textbf{1e}: Visually appears to be the most Gaussian, but is too flat at the peak and so fails after 1000 points.}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.8\linewidth]{./plots/1e_kuipertest_data8.png}
+  \caption{\textbf{1e}: }
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.8\linewidth]{./plots/1e_kuipertest_data9.png}
+  \caption{\textbf{1e}: }
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.8\linewidth]{./plots/1e_kuipertest_data10.png}
+  \caption{\textbf{1e}: This data set has a large negative skew which causes it to fail.}
+\end{figure}
+
+It is apparent from these plots that it takes about 100 points in order for the p-value to fall below the 2-$\sigma$ level. And none survive past 500 points if they are truly not standard normal. Those that do pass the Kuiper test are data sets 4 and 6. They also resemble the plots from the previous sub question, where the p-value remained above the 2-$\sigma$ level, despite some fluctation. I am unsure why data set six diveges to 0 and then returns at the next point to above 2-$\sigma$; this could be due to a discontinuity in the slicing of my random normal rvs, since it also does not survive up past about $10^{4.5}$ points.
 
 \end{subsection}

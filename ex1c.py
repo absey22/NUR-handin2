@@ -6,16 +6,6 @@ import matplotlib.pyplot as plt
 from ex1functions import mykstest,BoxMuller
 from scipy.stats import kstest
 
-#Prove: null hypothesis is that actual data follows a normal distribution
-# accomplish by finding max distance between Gaussian CDF and data CDF
-
-#The KS statistic D can be calculated as shown in Section 6.14 of Press et al.
-# a p-value of the signficance of the D of this observation can therefore be found
-# from that distribution.
-
-#is the probability that a value as large as D would occur if data was drawn from cdf.
-
-#If the p-value is greater than the significance level (say 5%), then we cannot reject the hypothesis that the data come from the given distribution.
 
 N=int(1e5) # number of points to reach up to in testing
 data=BoxMuller(N,mean=0,stdv=1.0) # make random realization of data drawn from my Box-Muller algorithm (normal variate from 2 uniform variates)
@@ -36,8 +26,8 @@ for i in range(len(cnt)):
 
 plt.subplot(2,1,1)
 plt.title("K-S Test: Box-Muller Normal rvs")
-plt.plot(cnt,pval[:,0],label="My p-value")
-plt.plot(cnt,pval[:,1],":",label="SciPy p-value")
+plt.plot(cnt,pval[:,0],linewidth=4,label="My p-value")
+plt.plot(cnt,pval[:,1],linewidth=3,linestyle=":",label="SciPy p-value")
 plt.ylabel("p-value")
 plt.yscale("log")
 plt.ylim((10**-3,10**0.2))
@@ -49,8 +39,8 @@ plt.text(4.35,10**-2.82,'3-$\sigma$ rejection',color='r')
 plt.legend()
 
 plt.subplot(2,1,2)
-plt.plot(cnt,Dval[:,0],label="My D statistic")
-plt.plot(cnt,Dval[:,1],":",label="SciPy D statistic")
+plt.plot(cnt,Dval[:,0],linewidth=4,label="My D statistic")
+plt.plot(cnt,Dval[:,1],linewidth=3,linestyle=":",label="SciPy D statistic")
 plt.xlabel("$log_{10}(N_{points})$")
 plt.ylabel("D statistic")
 plt.yscale("log")
