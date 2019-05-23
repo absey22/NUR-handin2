@@ -9,17 +9,17 @@ The result of the script is given by:
 
 
 
-A classification problem involves labeling a set of features in a data set and choosing which features have the most effect on the behavior of the desired classification item. To do this we can plot each feature against each other. A feature is then excluded based on when one feature exhibits no variation as a function of the other the whole range their values. Without variation, a feature will probably not add anything to the success of the training.
+A classification problem involves labeling a set of features in a data set and choosing which features have the most effect on the behavior of the desired classification item. To do this we can plot each feature against each other. A feature is then excluded based on when one feature exhibits no variation as a function of the other the whole range their values. Without variation, a feature will not add anything to the success of the training.
 
-
+The features with the most useful behavior after plotting them all against eachother are shown below. The best behavior is reshift against log mass. It has the greatest quantity of samples remaining after dealing with the missing data.
 \begin{figure}[h!]
   \centering
   \includegraphics[width=0.9\linewidth]{./plots/6_featurecomparison.png}
-  \caption{\textbf{6}: The most desireable set of features has been highlighted in gold. It exhibits a significantly large cloud of points away from the missing data which itself has aspatial dependence on the GRB type. (The $T_{90}$ feature has been exlcuded from the above plot as this  is the quantity we will be using to label the data set and so it cannot be used to train on.)}
+  \caption{\textbf{6}: The most desireable set of features has been highlighted in gold. It exhibits a significantly large cloud of points away from the missing data which itself has aspatial dependence on the GRB type. (The $T_{90}$ feature has been exlcuded from the above choice of feature removal as this  is the quantity we will be using to label the data set and so it cannot be used to train on.)}
   \label{fig:featurecomparison}
 \end{figure}
 
-The features that which show the least amount of interesting clustering behavior in the plots are the SFR, log($Z/Z_{\odot}$), SSFR, and the AV. Whereas the redshift versus log($M*/M_{\odot}$) plot has an interesting cloud of points which itself depends on if GRB is short or long.
+The SSFR feature shows nearly no behavior when plotted against all the other features. Whereas the redshift versus log($M*/M_{\odot}$) plot has an interesting cloud of points which itself depends on if GRB is short or long.
 
 To perform the logistic regression to classify these GRB's on redshift and log mass, we first need to label the data set by the value of $T_{90}$ based on the 10 second threshold known to identify short from long GRBs. Next, we can solve the problem of missing data by setting all the missing data points to zero. In this way, any associated weights given to those samples of an included feature which have missing data just drop out of the regression. The all but the above mentioned two features are excluded from this training.
 
@@ -46,9 +46,15 @@ In this case, the training seems to succeed at classifying fast GRB. The F1 scor
 
 A decision boundary can be constructed based on the line formed by the linear combination of features. It is the boundary where the hypothesis is equal to 0.5, such either side of the line represents where the hypothesis was larger or smaller than 0.5. This linear combination is just the equation for a line which has an ''x-intercept'', a ''y-intercept'', and a slope which can be solved for and plotted.
 
+\begin{equation}
+  x_2 = -\frac{\theta_1}{\theta_2}x_1 + \frac{\text{logit}(0.5)-\theta_0}{\theta_2}
+\end{equation}
+
+Where $x_1$ and $x_2$ are the training samples, $\theta_0$ is the bias input, $\theta_1$, and $\theta_2$ are the feature weights. The logit term is just 0, but it is the boundary between the classification of short and long GRBs.
+
 \begin{figure}[h!]
   \centering
   \includegraphics[width=0.9\linewidth]{./plots/6_decisionboundary.png}
-  \caption{\textbf{6}: The decision boundary shows that there are both types of GRBs on either size of the decision boundary, but there are more short GRBs to one side; thus leaving a lot of false positives. This could be due to my choice of features to train on.}
+  \caption{\textbf{6}: The plots shows that there are two types of GRBs, blue dots for short, red dots for long. The 0.5 decision boundary should be a line dividing the two classes as best as possible based on the training. The line is the 0.1 boundary which should be more like what the 0.5 boundary is; this is unexpected behavior which may be due to a plotting error or an unaccounted sign somewhere in the code. I don't think its a misinterpretation of my trained weights. Plotting the \hat{y}=0.1 line is to demonstrate what it should more ideally look like for the output of the classifier functioning perfectly (each of one type of GRB on either side of the boundary).}
   \label{fig:decisionboundary}
 \end{figure}

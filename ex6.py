@@ -30,16 +30,24 @@ m=features.shape[0]; n=features.shape[1]
 feature_names=['Redshift','$T_{90}$','log($M*/M_{\odot}$)',"SFR",'log($Z/Z_{\odot}$)',"SSFR","AV"]
 
 #examine features by plotting versus each other to see clustering with short/long behavior
-for i in range(1,n):
-    plt.subplot(2,n/2,i)
-    if i==2:
-         plt.subplot(2,n/2,i,facecolor='gold')
-    plt.plot(features[:,0][features[:,1]>=10.],features[:,i][features[:,1]>=10.],'ro',label="Long GRBs")
-    plt.plot(features[:,0][features[:,1]<10.],features[:,i][features[:,1]<10.],'bo',label="Short GRBs")
-    plt.xlabel(feature_names[0])
-    plt.ylabel(feature_names[i])
-    if i==1:
-        plt.legend()
+plt.subplot(2,2,1)
+plt.title(feature_names[3]+"  vs.  "+feature_names[2])
+plt.plot(features[:,3][features[:,1]>=10.],features[:,2][features[:,1]>=10.],'ro')
+plt.plot(features[:,3][features[:,1]<10.],features[:,2][features[:,1]<10.],'bo')
+plt.subplot(2,2,2,facecolor='gold')
+plt.title(feature_names[0]+"  vs.  "+feature_names[2])
+plt.plot(features[:,0][features[:,1]>=10.],features[:,2][features[:,1]>=10.],'ro',label="Long GRBs")
+plt.plot(features[:,0][features[:,1]<10.],features[:,2][features[:,1]<10.],'bo',label="Short GRBs")
+plt.legend()
+plt.subplot(2,2,3)
+plt.title(feature_names[4]+"  vs.  "+feature_names[2])
+plt.plot(features[:,4][features[:,1]>=10.],features[:,2][features[:,1]>=10.],'ro')
+plt.plot(features[:,4][features[:,1]<10.],features[:,2][features[:,1]<10.],'bo')
+plt.subplot(2,2,4)
+plt.title(feature_names[4]+" vs. "+feature_names[6])
+plt.plot(features[:,4][features[:,1]>=10.],features[:,6][features[:,1]>=10.],'ro')
+plt.plot(features[:,4][features[:,1]<10.],features[:,6][features[:,1]<10.],'bo')
+
 plt.tight_layout(pad=0.3, w_pad=0.3, h_pad=1.0)
 plt.savefig("./plots/6_featurecomparison.png")
 plt.clf()
@@ -48,6 +56,7 @@ plt.clf()
 
 #Exclude features from training set based on feature vs. feature behavior (and set missing features to zero):
 # 0=Redshift    1=T90     2=log (M*/Msolar)    3=SFR    4=log (Z/Zsolar)   5=SSFR    6=AV
+# most useful feature relations: (0,2) (2,3) (2,4) (4,6)
 exclude_ind=[1,3,4,5,6]
 
 #get the remaining desired features:
@@ -65,15 +74,17 @@ x2 = features[:,desired_features[1]]
 
 
 #remove samples with missing features so that they dont effect the training
-removemask=np.logical_or(features[:,desired_features[0]]==-1.,features[:,desired_features[1]]==-1.)
-x1=x1[np.logical_not(removemask)]
-x2=x2[np.logical_not(removemask)]
-labels=labels[np.logical_not(removemask)]
+missingmask=np.logical_or(features[:,desired_features[0]]==-1.,features[:,desired_features[1]]==-1.)
+removemask=np.logical_not(missingmask)
+
+x1=x1[removemask]
+x2=x2[removemask]
+labels=labels[removemask]
 
 x1unscaled=x1.copy()
 x2unscaled=x2.copy()
 
-print("Due to missing data,",len(features[:,desired_features[0]])-len(x1),"samples were removed from the data set of",m,"total samples.")
+print("Due to missing data,",len(features[:,desired_features[0]])-len(x1),"samples were removed (from the data set of",m,"total samples.)")
 
 
 #take the two desired features and scale them
@@ -139,8 +150,8 @@ bias=parameters[0]
 if polynomialorder==1:
     wa,wb=parameters[1:][np.nonzero(parameters[1:])] # grab the weights after the bias (will fail with more than 2 input weights in exlcude_ind
     print("Bias:",bias)
-    print("Feature",desired_features[0],"weight:",wa)
-    print("Feature",desired_features[1],"weight:",wb)
+    print(feature_names[desired_features[0]],"weight:",wa)
+    print(feature_names[desired_features[1]],"weight:",wb)
 elif polynomialorder==2:
     weights=parameters[1:][np.nonzero(parameters[1:])] # grab the weights after the bias (will fail with more than 2 input weights in exlcude_ind
     print("Bias 0 :",bias)
@@ -172,21 +183,21 @@ output=sigmoid( features.dot(parameters) )
 print("---------")
 f1=f1score(labels,output)
 print("Using",len(parameters),"weight(s) in logistic regression (including a bias) the resulting F1-score")
-print("of this classifier is",round(100*f1[0],1),"%. It correctly classified as long GRBs",f1[1],"of")
-print("the known",np.count_nonzero(labels==1.0),"long GRBs (from a total of",features.shape[0],"trained samples of GRBs.)")
+print("of this classifier is",round(100*f1[0],1),"%.")
+print("It correctly classified",f1[1],"/",np.count_nonzero(labels==1.0)," of the known long GRBs and",f1[2],"/",np.count_nonzero(labels==0.0),"of the known short GRBs.")
+print("(Training on a total of",features.shape[0],"samples of GRBs.)")
 
 
 #the resulting decision boundary
 
-T90=dataset[:,1][np.logical_not(removemask)]
+T90=dataset[:,1][removemask]
 
-feature1space=np.linspace(min(x1unscaled),max(x1unscaled),100)  # for plotting the decision boundary
 
 plt.title("Classifier Results: "+feature_names[desired_features[0]]+" & "+feature_names[desired_features[1]]+" (and a bias)")
 plt.plot(x1unscaled[T90>=10.],x2unscaled[T90>=10.],'ro',label="Long GRBs")
 plt.plot(x1unscaled[T90<10.],x2unscaled[T90<10.],'bo',label="Short GRBs")
 if polynomialorder==1:
-    plt.plot(feature1space,decisionboundary(feature1space,bias,wa,wb),"--",label='Decision Boundary')
+    plt.plot(x1unscaled,decisionboundary(x1unscaled,bias,wa,wb),"--",label='Decision Boundary')
 plt.xlabel(feature_names[desired_features[0]])
 plt.ylabel(feature_names[desired_features[1]])
 plt.legend()

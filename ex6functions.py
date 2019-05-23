@@ -10,6 +10,8 @@ def featurescale(x):
 
 def sigmoid(z):
     return 1./( 1.+np.exp(-1.*z) )
+def logit(z): #inverse of sigmoid for plotting decision boundary
+    return np.log(z/(1.-z))
 
 
 def hypothesis(features,parameters):
@@ -54,6 +56,8 @@ def f1score(datalabels,regoutput):
     f1=(2.*truepos)/((2.*truepos)+trueneg+falsepos+falseneg)
     return f1,truepos,trueneg,falsepos,falseneg
 
-#from solving equation of line: theta0*1 + theta1*x1 + theta2*x2 = 0.5 = yhat
+#from solving equation of line: yhat= sigmoid(theta0*1 + theta1*x1 + theta2*x2) = 0.5
+# (have to take the logit of both sides)
 def decisionboundary(x,b,w1,w2): #calculate bondary, is a line in case of 2 input neurons
-    return -(w1 / w2) * x + ((0.5-b) / w2) # (just an equation of a line)
+    return -((b-logit(0.1)) + w1*x)/w2 # (just an equation of a line)
+    
