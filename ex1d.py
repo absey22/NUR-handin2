@@ -7,18 +7,6 @@ from ex1functions import kuiperstest,BoxMuller, GaussianCDF
 #from astropy.stats import kuiper
 from scipy.stats import kstest
 
-#Kuiper V = D+ + D- is a statistic that is invariant under all shifts
-# and parametrizations on a circle created by wrapping around the x-axis.
-
-#from kuiper source code:
-"""
-    Stephens 1970 claims this is more effective than the KS at detecting
-    changes in the variance of a distribution; the KS is (he claims) more
-    sensitive at detecting changes in the mean.
-    If cdf was obtained from data by fitting, then fpp is not correct and
-    it will be necessary to do Monte Carlo simulations to interpret D.
-    D should normally be independent of the shape of CDF.
-"""
 
 #See ex1c.py for comments explaining these steps here:
 
@@ -82,14 +70,16 @@ for i in range(len(cnt)):
     mykuiper[i]=kuipertemp[0]+kuipertemp[1],kuipertemp[2] # store those
     Dplus,p_greater=kstest(dataslice,'norm',alternative='greater') # get scipy D,Pval
     Dminus,p_less=kstest(dataslice,'norm',alternative='less') # for kuiper implementation
-    scipykuiper[i]=Dplus+Dminus,p_greater#-p_less #reimplemented Kuiper via SciPy KS
+    #take the p-value with the smaller median value (closer to rejecting null hypothesis)
+    scipykuiper[i]=Dplus+Dminus,np.where(np.median(p_greater)<np.median(p_less),p_greater,p_less) #reimplemented Kuiper via SciPy KS
     #astropykuiper[i]=kuiper(dataslice, GaussianCDF) # get astropy D,pval #failed attempt with astropy
+
 
 
 plt.subplot(2,1,1)
 plt.title("Kuiper Test: Box-Muller Normal rvs")
-plt.plot(cnt,mykuiper[:,1],label="My Kuiper p-value")
-plt.plot(cnt,scipykuiper[:,1],label="SciPy p-value")
+plt.plot(cnt,mykuiper[:,1],linewidth=4,label="My Kuiper p-value")
+plt.plot(cnt,scipykuiper[:,1],linewidth=3,linestyle=":",label="SciPy p-value")
 plt.xlabel("$log_{10}(N_{points})$")
 plt.ylabel("p-value")
 plt.hlines(0.05,0.8,5.2,linewidth=0.8,linestyles=':')
@@ -98,11 +88,11 @@ plt.hlines(0.003,0.8,5.2, linewidth=0.8,linestyles='--')
 plt.text(4.35,10**-2.82,'3-$\sigma$ rejection',color='r')
 plt.yscale("log")
 plt.ylim((10**-3,10**0.2))
-plt.legend(loc=1)
+plt.legend(loc=3)
 
 plt.subplot(2,1,2)
-plt.plot(cnt,mykuiper[:,0],label="My Kuiper V statistic")
-plt.plot(cnt,scipykuiper[:,0],label="SciPy V statistic")
+plt.plot(cnt,mykuiper[:,0],linewidth=4,label="My Kuiper V statistic")
+plt.plot(cnt,scipykuiper[:,0],linewidth=3,linestyle=":",label="SciPy V statistic")
 plt.xlabel("$log_{10}(N_{points})$")
 plt.ylabel("V statistic")
 plt.yscale("log")

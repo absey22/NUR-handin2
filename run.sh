@@ -15,8 +15,6 @@ wget strw.leidenuniv.nl/~nobels/coursedata/colliding.hdf5
 
 
 echo "Run the first exercise scripts ..."
-echo "--1(e)--"
-python3 ex1e.py &   # runs in background
 echo "--1(a)--"
 python3 ex1a.py > "ex1aoutput.txt"
 echo "--1(b)--"
@@ -25,7 +23,8 @@ echo "--1(c)--"
 python3 ex1c.py
 echo "--1(d)--"
 python3 ex1d.py
-
+echo "--1(e)--"
+python3 ex1e.py
 
 echo "Run the third  exercise script ..."
 python3 ex3.py

@@ -52,9 +52,35 @@ Solving for the coefficients using the initial values this leaves the solutions:
   \item Case 1: $D(t) = 3t^{2/3}$ 
   \item Case 2: $D(t) =10/t$
   \item Case 3: $D(t) =  3t^{2/3}+ 2/t$
-\end{itemize} 
+  \end{itemize}
+
+
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/3_spatialdensitygrowth.png}
+  \caption{\textbf{3}: The three provided cases of spatial density growth. Case 1 and 3 are growing modes. Case 2 is a decaying mode. The analytical solutions shown above have been overplotted on the RK4 solutions down in my code. We can see good agreement between the two; there are only differences on the order of $10^{-9}$.}
+  \label{fig:spatialdensitygrowth}
+\end{figure}
+
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/3_spatialdensitygrowth_residuals.png}
+  \caption{\textbf{3}: The residuals between the analytical solutions with solved coefficients and my RK4 solutions show agreement to $10^{-9}$.}
+  \label{fig:spatialdensitygrowthresiduals}
+\end{figure}
 
 The first time derivative term ($\propto (\dot{a}/a)(\delta D /\delta t)$) can be interpretted as a frictional term (sometimes called ''Hubble friction''). This means that its sign determines the behavior of the spatial growth of structure, in terms of expansion or collapse.
+
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/3_spatialdensitygrowth_near_t0.png}
+  \caption{\textbf{3}: Again showing the spatial growth at early times.}
+  \label{fig:spatialdensitygrowtht0}
+\end{figure}
+
 
 The plots show two growing modes (Case 1 \& Case 3) and a decaying modes (Case 2). In Case 2, a ''negative frictional term'' put a constraint on expansion. This means that its large initial size and inability to expand leads it to collapse gravitationally (and exponentially) to high density on the time scale of tens of years. The opposite condition is represented in Case 1 where a smaller scale initial spatial perturbation (given by $D(1)$) but a positive frictional means the perturbation only grows with time, and exponentially so. An inward pressure term causes the structure to violenty expand to low density. Case 3 is just at the limit between these two where it initially looks like it could expand or collapse at very early times, but it is just large enough that it wants to expand exponentially after a few tens of years.
 
