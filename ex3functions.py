@@ -3,6 +3,7 @@ import numpy as np
 
 #fourth order RK
 #take two first order DE's (functions of t, D, and z) and increment via RK4
+#via a weighted average of slopes at the midpoints begtween steps.
 def RK4(fode1,fode2,t0,d0,z0,step):
     k1=step*fode1(t0, d0, z0)
     l1=step*fode2(t0, d0, z0)
