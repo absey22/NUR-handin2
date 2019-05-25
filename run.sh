@@ -26,6 +26,9 @@ python3 ex1d.py
 echo "--1(e)--"
 python3 ex1e.py
 
+echo "Run the second  exercise script ..."
+python3 ex2.py
+
 echo "Run the third  exercise script ..."
 python3 ex3.py
 
