@@ -28,7 +28,7 @@ def intode(func1,func2,integrator,start,stop,step,initcond=(3.,2.)):
     #integrate the coupled ode's
     for i in range(len(t)):
         t[i],D[i]=tcurr,Dcurr # store current approximation for spatial density
-        Dnew,znew=RK4(func1,func2,tcurr,Dcurr,zcurr,step) # calculate solution at next step
+        Dnew,znew=integrator(func1,func2,tcurr,Dcurr,zcurr,step) # calculate solution at next step
         Dcurr,zcurr=Dnew,znew # update
         tcurr+=step # increment time
     return t,D # density solution over the time stop-start

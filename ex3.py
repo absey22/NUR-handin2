@@ -38,9 +38,9 @@ plt.plot(case1[0],case1[1],color='r',linewidth=3.5,label='Case 1')
 plt.plot(case2[0],case2[1],color='g',linewidth=3.5,label='Case 2')
 plt.plot(case3[0],case3[1],color='c',linewidth=3.5,label='Case 3')
 #ANALYTICAL
-plt.plot(tspace,Anl_case1,color='b',linestyle="--",label='Anl Case 1')
-plt.plot(tspace,Anl_case2,color='y',linestyle="--",label='Anl Case 2')
-plt.plot(tspace,Anl_case3,color='r',linestyle="--",label='Anl Case 3')
+plt.plot(tspace,Anl_case1,color='b',linestyle="--",label='Analyt. Case 1')
+plt.plot(tspace,Anl_case2,color='y',linestyle="--",label='Analyt. Case 2')
+plt.plot(tspace,Anl_case3,color='r',linestyle="--",label='Analyt. Case 3')
 
 plt.xlabel("time (years)")
 plt.ylabel("D(t)")
