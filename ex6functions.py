@@ -2,8 +2,10 @@ import numpy as np
 
 
 
-def featurescale(x):
-    return (x-np.mean(x))/np.std(x)
+def featurescale(samples): # accounting for missing data by ignoring it during scaling
+    samples[samples==-1.]=np.nan # set missing features to NaN
+    samples=(samples-np.nanmean(samples))/np.nanstd(samples) # ignoring NaNs
+    return np.nan_to_num(samples) # set missing features to 0 so they dont effect the training
 
 
 #logistic regression
@@ -48,7 +50,7 @@ def f1score(datalabels,regoutput):
         if datalabels[i]==0. and regoutput[i]>0.5:
             falsepos+=1
     checksum=truepos+trueneg+falsepos+falseneg
-    print("F1-score results:")
+    print("F1-score Confusion Matrix:")
     print("TP:",truepos, "FP:",falsepos)
     print("FN:",falseneg,"TN:",trueneg )
     if checksum!=len(regoutput):
@@ -58,6 +60,6 @@ def f1score(datalabels,regoutput):
 
 #from solving equation of line: yhat= sigmoid(theta0*1 + theta1*x1 + theta2*x2) = 0.5
 # (have to take the logit of both sides)
-def decisionboundary(x,b,w1,w2): #calculate bondary, is a line in case of 2 input neurons
-    return -((b-logit(0.1)) + w1*x)/w2 # (just an equation of a line)
+def decisionboundary(x,b,w1,w2,threshold=0.5): #calculate bondary, is a line in case of 2 input neurons
+    return -((b-logit(threshold)) + w1*x)/w2 # (just an equation of a line)
     

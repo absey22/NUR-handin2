@@ -21,9 +21,9 @@ The features with the most useful behavior after plotting them all against eacho
 
 The SSFR feature shows nearly no behavior when plotted against all the other features. Whereas the redshift versus log($M*/M_{\odot}$) plot has an interesting cloud of points which itself depends on if GRB is short or long.
 
-To perform the logistic regression to classify these GRB's on redshift and log mass, we first need to label the data set by the value of $T_{90}$ based on the 10 second threshold known to identify short from long GRBs. Next, we can solve the problem of missing data by setting all the missing data points to zero. In this way, any associated weights given to those samples of an included feature which have missing data just drop out of the regression. The all but the above mentioned two features are excluded from this training.
+To perform the logistic regression to classify these GRB's on redshift, log mass, and star formation rate, we first need to label the data set by the value of $T_{90}$ based on the 10 second threshold known to identify short from long GRBs. Next, we can solve the problem of missing data by setting all the missing data points to zero. In this way, any associated weights given to those samples of an included feature which have missing data just drop out of the regression.
 
-Just prior to the actual training, involving gradient descent to find parameters, these features must be scaled. This speeds up the training by making the gradient descent phase converge must faster since mostly all the parameters will be made to lie in the range [-1,1].
+Just prior to the actual training via gradient descent to find parameters the features must be scaled. This speeds up the training by making the gradient descent phase converge must faster since mostly all the parameters will be made to lie in the range [-1,1].
 
 (At this point we can choose to place these two features in a basic 1D polynomial, just a linear combination, or a higher order 2D polynomial. The distinction comes in proper fitting. If the order of this polynomial goes much higher than 2, then we risk over fitting. But we also risk under fitting by only taking the simple linear combination of two features.)
 
@@ -31,18 +31,24 @@ Parameters and a bias are intialized to zero (giving three parameters in the cas
 
 Logistic regression is based on the formation of a hypothesis, the calculation of a loss function which is a function of how far away that prediction is from the known label, and ultimately a cost function which is what is minimized. This cost function is a function of the loss and is just a sum of the loss functions over all the samples of a feature. The cost in this case in therefore a single value which can be minimized if the parameters (or weights) of each feature are found such that their combination most closely matches the known label (so that the hypothesis for a sample is close to its label and the loss function will be small.)
 
-Gradient descent (GD) is performed while the error (a difference between successive cost functions) remains above a desired thresholh value. Here that is set a $10^{-6}$, but initialized as a very large value. GD takes those parameters, and performs the above described sequence of calculations and determines slightly alters the parameter values in the hopes of minimizing the cost in each iteration. With successful GD, the error should coverge down to the threshold and the cost function should also converge down to some value.
+Gradient descent (GD) is performed while the error (a difference between successive cost functions) remains above a desired thresholh value. Here that is set a $10^{-6}$, but initialized as a very large value. GD takes those parameters, and performs the above described sequence of calculations and determines slightly alters the parameter values in the hopes of minimizing the cost in each iteration. With successful GD, the error should converge down to the threshold and the cost function should also converge down to some value.
 
 \begin{figure}[h!]
   \centering
   \includegraphics[width=0.9\linewidth]{./plots/6_classificationperformance.png}
-  \caption{\textbf{6}: The cost function converges down to a minimum after a couple thousand iterations of the gradient descent given the setting of the learning rate to <0.1.}
+  \caption{\textbf{6}: The cost function which sums up how how the hypothesis (based on three parameters and a bias) differs from the labels in each iteration converges down to a minimum after a couple thousand iterations of the gradient descent given the setting of the learning rate to <0.1.}
   \label{fig:classificationperformance}
 \end{figure}
 
-The success of the training (to find the proper weights for each samples' features) can be determined via the activation function, which is the sigmoid in this case. Applying the sigmoid function to the dot product of the weights and features (accounting for the bias) gives the result of what the training algorithm determine to be a short or long GRB (by outputting a value between 0 and 1, whereas the labels are 0 or 1.) Further, a test such as the F1-score quantifies how many true or false identifications the classifier makes given the known labels for each GRB sample.
+The success of the training (to find the proper weights for each samples' features) can be determined via the activation function, which is the sigmoid in this case. Applying the sigmoid function to the dot product of the weights and features (including a the bias) gives the result of what the training algorithm determine to be a short or long GRB (by outputting a value between 0 and 1, whereas the labels are 0 or 1.)
 
-In this case, the training seems to succeed at classifying fast GRB. The F1 score is above 80\%. After removing the missing data, I consider 94 total samples. Of those, 64 are true positive long GRBs and 24 are false positives. It is know from the labels that there are 66 long GRBs and therefore 28 short GRBs.
+\begin{equation}
+  h_{\theta}(x^{(i)}) \equiv \hat{y} = \sigma(\theta^Tx) = \sigma(\theta_0+\theta_1x_i^{(i)}+\theta_2x_i^{(i)}+\theta_3x_i^{(i)})
+\end{equation}
+
+Further, the F1-score quantifies the accuracy of the identifications the classifier makes given the known labels for each GRB sample.
+
+In this case, the classifier reaches an F1 score of almost 60\%. I tried taking the hypothesis without and without the bias weight. Using the bias seems to make the classifier identify all of the long GRBs but none of the short GRBs. This is strange behavior which gives an F1 score of almost 90\%. This does not seem correct. If I instead exclude the bias, in the output predictions, there are about half of each type of GRB identified (out of 185 long and 50 short GRBs.)
 
 A decision boundary can be constructed based on the line formed by the linear combination of features. It is the boundary where the hypothesis is equal to 0.5, such either side of the line represents where the hypothesis was larger or smaller than 0.5. This linear combination is just the equation for a line which has an ''x-intercept'', a ''y-intercept'', and a slope which can be solved for and plotted.
 
@@ -50,11 +56,18 @@ A decision boundary can be constructed based on the line formed by the linear co
   x_2 = -\frac{\theta_1}{\theta_2}x_1 + \frac{\text{logit}(0.5)-\theta_0}{\theta_2}
 \end{equation}
 
-Where $x_1$ and $x_2$ are the training samples, $\theta_0$ is the bias input, $\theta_1$, and $\theta_2$ are the feature weights. The logit term is just 0, but it is the boundary between the classification of short and long GRBs.
+Where $x_1$ and $x_2$ are the training samples, $\theta_0$ is the bias input, $\theta_1$, and $\theta_2$ are the feature weights. The logit term is 0 here for a decision boundary at $\hat{y}$=0.5, the boundary between the classification of short and long GRBs can be found for different thresholds of identificaiton.
 
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=0.9\linewidth]{./plots/6_decisionboundary.png}
-  \caption{\textbf{6}: The plots shows that there are two types of GRBs, blue dots for short, red dots for long. The 0.5 decision boundary should be a line dividing the two classes as best as possible based on the training. The line is the 0.1 boundary which should be more like what the 0.5 boundary is; this is unexpected behavior which may be due to a plotting error or an unaccounted sign somewhere in the code. I don't think its a misinterpretation of my trained weights. Plotting the \hat{y}=0.1 line is to demonstrate what it should more ideally look like for the output of the classifier functioning perfectly (each of one type of GRB on either side of the boundary).}
-  \label{fig:decisionboundary}
+  \includegraphics[width=0.9\linewidth]{./plots/6_decisionboundary_x1x2.png}
+  \caption{\textbf{6}: The plots shows that there are two types of GRBs, blue dots for short, red dots for long. The 0.5 decision boundary should be a line dividing the two classes as best as possible based on the training. These boundaries are showing unexpected behavior which may be due to a plotting error or an unaccounted sign somewhere in the code. I don't think its a misinterpretation of my trained weights.}
+  \label{fig:decisionboundary1}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/6_decisionboundary_x2x3.png}
+  %\caption{\textbf{6}: The plots shows that there are two types of GRBs, blue dots for short, red dots for long. The 0.5 decision boundary should be a line dividing the two classes as best as possible based on the training. These boundaries are showing unexpected behavior which may be due to a plotting error or an unaccounted sign somewhere in the code. I don't think its a misinterpretation of my trained weights.}
+  \label{fig:decisionboundary2}
 \end{figure}

@@ -3,3 +3,40 @@ The script used to generate the results is given by:
 \lstinputlisting{ex2.py}
 
 
+For convenience in the DFT, an even grid size is take of N = 1024 pixels on one side. This always leaves the Nyquist frequency in the complex Fourier plane of fourier coefficients in the the center of the image. The grid side length defines the sampling interval $1/N$, so that the Nyquist frequency in this case becomes $(1/2)(1/N) = N/2$.
+
+Therefore, a grid is initialized with those fourier $k$ coefficients starting from 0:
+
+\begin{equation}
+    k_x=(0,1,2, ... , N/2, 1- (N/2), ... , -3,-2,-1)
+\end{equation}
+
+Doing the same for the $k_y$ component, and creating a matrix of with ($k_x$,$k_y$) indices will satisfy the condition of a symmetric complex fourier plane.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/2_kspace.png}
+  \caption{\textbf{2}: The result space of k values for the above sequence. The symmetric matrix of indices is constructed by drawing from the above 1D sequence at corresponding points in the grid defined by N. These symmetric $k_x$ and $k_y$ (a function of n in $k^n$) values are used to draw variates.}
+  \label{fig:kspace}
+\end{figure}
+
+The above series stops at -1 because these is no ''negative zero frequency.'' At each point in this matrix, two Gaussian variates are draw with standard deviation $(k_x^2+k_y^2)^{n/2}$ corresponding to the wave number dependent dispersion which goes as $k^n$.
+
+The resulting matrix of complex vectors is then Rayleigh distributed. Taking its inverse DFT gives a Gaussian random field. The power spectrum of this Gaussain field can be modified by changing the value of $n$ above.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/2_fourier_and_realplane.png}
+  \caption{\textbf{1d}: Taking the absolute value of the two complex matrices. The \textbf{left column} is the absolute value of the fourier plane constructed of drawn normal variates with variance that goes with the 2D wave number indices; this matrix is by definition complex since each point in the grid is constructed as \textit{a+bi} with a,b drawn variates. The \textbf{right column} is the absolute value of the inverse fourier transform of that matrix. It is still necessary to take the absolute value since the (remaining) imaginary component.}
+  \label{fig:abs}
+\end{figure}
+
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/2_realplane_imagrealparts.png}
+  \caption{\textbf{2}: The imaginary part in the \textbf{right column} should be close to zero having satisfied the symmetry in the array of fourier amplitude coefficients: when $\widetilde{Y}(-k)=\widetilde{Y}*(k)$ is satisfied, then the output inverse DFT should ideally be entirely real valued (no imaginary component left.) Due to machine floating point precision, there is a remaining imaginary component. The imaginary components should therefore be very close to zero, or very ''dim'' when scaled to the same color bar as the \textbf{left column} real components. That seems to not always hold true upon the generation of different fields (with different seeding.)}
+  \label{fig:imagrealparts}
+\end{figure}
+
+

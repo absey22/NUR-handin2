@@ -10,7 +10,7 @@ from scipy.fftpack import ifft2
 
 
 #choose an even grid size to put nyquist frequency in the center
-N=1024 # gives sampling interval of 1/N in frequency space, and a Nyquist frequency 1/2*(1/N)
+N=10 # gives sampling interval of 1/N in frequency space, and a Nyquist frequency 1/2*(1/N)
 
 Nyquist_k=int(N/2)
 
@@ -26,12 +26,12 @@ fourier_coeff=np.concatenate((np.arange(0,1+Nyquist_k,1),np.arange(1-Nyquist_k,0
 # BoxMuller normal rvs with variance P(k,n)=sqrt(k_x^2+k_y^2)^n/2 and mean 0
 # results in a Rayleight distributed fourier space (and Gaussian real space)
 
-print("fourier")
+
 fourierplane1,kxspace,kyspace=createfourierplane(fourier_coeff,BoxMuller,N,n=-1.,kspace=True)
 fourierplane2=createfourierplane(fourier_coeff,BoxMuller,N,n=-2.)
 fourierplane3=createfourierplane(fourier_coeff,BoxMuller,N,n=-3.)
 
-print("real")
+
 realplane1=ifft2(fourierplane1)
 realplane2=ifft2(fourierplane2)
 realplane3=ifft2(fourierplane3)
@@ -61,11 +61,15 @@ for i in range(3):
     plt.ylabel("$P(k) \propto k^{"+str(-(i+1))+"}$",fontsize=13)
     if i==0:
         plt.title("abs(Complex Fourier Plane)")
+    if i==2:
+        plt.xlabel("1/Mpc")
     plt.imshow(np.log10(abs(fourierplanes[i])),origin='lower')
     plt.colorbar(fraction=0.046, pad=0.04)
     plt.subplot(3,2,i+2+dummypltcnt)
     if i==0:
         plt.title('abs("Complex" Gaussian Field)')
+    if i==2:
+        plt.xlabel("Mpc")
     plt.imshow(np.log10(abs(realplanes[i])),origin='lower')
     plt.colorbar(fraction=0.046, pad=0.04)
     dummypltcnt+=1
@@ -77,7 +81,6 @@ plt.clf()
 
 
 #compare the real and imaginary parts of inverse FFT
-#the imaginary part should be close to zero when satisfying the symmetry in the fourier amplitude array. if  Y(-k)=Y*(k) is satisfied, then the output inv FT should ideally be entirely real valued, but there is a remaining imaginary component left in the phase due to machine error.
 
 plt.figure()
 dummypltcnt=0
@@ -87,12 +90,16 @@ for i in range(3):
     if i==0:
         plt.title("real(Gaussian Random Field)")
     plt.ylabel("$P(k) \propto k^{"+str(-(i+1))+"}$",fontsize=13)
+    if i==2:
+        plt.xlabel("Mpc")
     realpart=imagescale(realplanes[i],'real')
     plt.imshow(np.real(realplanes[i]),vmin=cmin,vmax=cmax,origin='lower')
     plt.colorbar(fraction=0.046, pad=0.04)
     plt.subplot(3,2,i+2+dummypltcnt)
     if i==0:
         plt.title("imag(Gaussian Random Field)")
+    if i==2:
+        plt.xlabel("phase")
     plt.imshow(np.imag(realplanes[i]),vmin=cmin,vmax=cmax,origin='lower') # scale to real part's colorbar
     dummypltcnt+=1
 
