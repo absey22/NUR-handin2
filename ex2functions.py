@@ -1,22 +1,25 @@
 import numpy as np
 
 
-def createfourierplane(coefficients,randgenerator,size,n=-1.,kspace=False):
-    kxspace=np.empty((size,size));kyspace=np.empty((size,size))
+def createfourierplane(coefficients,randgenerator,size,n=-1.,returnk=False):
     fourier=np.empty((size,size),dtype=complex)
-
+    kspace=fourier.copy()
+    coefficients_R,coefficients_I=coefficients,coefficients
     for xi in range(size):
         for yi in range(size):
             if xi==0 and yi==0:
-                kx,ky=np.mean(coefficients),np.mean(coefficients) #  at zero frequency, DC component is the mean of frequencies
+                k=complex(np.mean(coefficients_R),np.mean(coefficients_I)) #  at zero frequency, DC component is the mean of frequencies
             else:
-                kx,ky=coefficients[xi],coefficients[yi] # gather the two fourier coefficients
+                k=complex(coefficients_R[xi],coefficients_I[yi]) # gather the two fourier coefficients
             
-            kxspace[yi,xi]=kx;kyspace[yi,xi]=ky # for plotting
-            a,b=randgenerator(2,mean=0,stdv=(kx**2.+ky**2.)**(n/2.)) # draw 2 normal variates of variance given by input power spectrum
-            fourier[yi,xi]=complex(a,b) #append those compoenents
-    if kspace:
-        return fourier,kxspace,kyspace
+            kspace[yi,xi]=k # for plotting
+            a,b=randgenerator(2,mean=0,stdv=(k.real**2.+k.imag**2.)**(n/2.))
+            if xi==int(size/2) or yi==int(size/2):
+                fourier[yi,xi]=complex(a,0.0) # set the Nyquist frequency to real
+            else:
+                fourier[yi,xi]=complex(a,b)
+    if returnk:
+        return fourier,kspace
     else:
         return fourier
 

@@ -11,7 +11,7 @@ Therefore, a grid is initialized with those fourier $k$ coefficients starting fr
     k_x=(0,1,2, ... , N/2, 1- (N/2), ... , -3,-2,-1)
 \end{equation}
 
-Doing the same for the $k_y$ component, and creating a matrix of with ($k_x$,$k_y$) indices will satisfy the condition of a symmetric complex fourier plane.
+Doing the same for the $k_y$ component, and creating a matrix of with ($k_x$,$k_y$) indices will satisfy the condition of obtaining a real inverse fourier transform: conjugate symmetry of fourier coefficients.
 
 \begin{figure}[h!]
   \centering
@@ -20,7 +20,7 @@ Doing the same for the $k_y$ component, and creating a matrix of with ($k_x$,$k_
   \label{fig:kspace}
 \end{figure}
 
-The above series stops at -1 because these is no ''negative zero frequency.'' At each point in this matrix, two Gaussian variates are draw with standard deviation $(k_x^2+k_y^2)^{n/2}$ corresponding to the wave number dependent dispersion which goes as $k^n$.
+The above series stops at -1 because these is no ''negative zero frequency.'' At each point in this matrix, two \textit{i.i.d.} Gaussian variates are draw with a standard deviation $(k_x^2+k_y^2)^{n/2}$ corresponding to the wave number dependent dispersion which goes as $k^n$.
 
 The resulting matrix of complex vectors is then Rayleigh distributed. Taking its inverse DFT gives a Gaussian random field. The power spectrum of this Gaussain field can be modified by changing the value of $n$ above.
 
