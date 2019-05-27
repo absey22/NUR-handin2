@@ -8,6 +8,19 @@ def trapezoidrule(func,x1,x2,panels):
         I+=func(x1+i*h)
     return h*I
 
+def midpointrule(func,a,b,n): # for n number of steps between a and b
+    print("Midpoint from a =",a,"to b =",b)
+    sections=1
+    for j in range(n-1):
+        sections*=3 # for adding more interior points
+    d=(b-a)/(3.*sections)
+    xevalpt=a+0.5*d
+    I=0.0
+    for i in range(sections-1):
+        I+=func(xevalpt)
+        xevalpt+=d # eval point spacing
+    return d*I
+
 
 def neville(I_estimate,order,acc): #benefits from Richardson Extrapolation of smaller and smaller error term with each order
     I=I_estimate # set initial trapezoid estimations
@@ -17,13 +30,14 @@ def neville(I_estimate,order,acc): #benefits from Richardson Extrapolation of sm
             I[i]=(4.**(float(order))*I[i+1] - I[i]) / (4.**(float(order))-1.)
         err=abs(I[0]-I[1])
         if err<=acc:
-            print("Combination of trapezoid estimates converged to",acc,"in order",order,".")
+            print("(Combination of integral estimates converged to",acc,"in order",order,".)")
             return I[0]
     return I[0]
 
 def romberg(func,a=1.,b=2.,order=3,acc=1e-5): 
     I_initial=np.zeros(order)
-    n=int(b-a) # initialize amount of sections
+    print("Romberg from a =",a,"to b =",b)
+    n=1 # initialize amount of sections
     for i in range(order): # generate order initial estimates via trapezoid rule
         I_initial[i]=trapezoidrule(func,a,b,n)
         n*=2 # half the step size each time (by doubling amount of sections)
@@ -32,25 +46,4 @@ def romberg(func,a=1.,b=2.,order=3,acc=1e-5):
 
 
 
-def extendedmidpt(func,a,b,n): # for n number of steps between a and b
-    
-    if n==1.:
-        I=(b-a)*func((a+b)/2.)
-        return I
-    else:
-        sections=1
-        for j in range(n-1):
-            sections*=3 # for added more interior points
-        print(sections)
-        d=(b-a)/(3.*sections)
-        print(d)
-        xevalpt=a+0.5*d
-        I=0.0
-        for i in range(n-1):
-            I+=func(xevalpt)
-            xevalpt+=d
-            xevalpt+=d
-            I+=func(xevalpt)
-            xevalpt+=d # alternate eval point spacing
-            print(I)
-        return ((b-a)*I/sections)/3.
+
