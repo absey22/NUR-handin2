@@ -50,7 +50,7 @@ Further, the F1-score quantifies the accuracy of the identifications the classif
 
 In this case, the classifier reaches an F1 score of almost 60\%. I tried taking the hypothesis without and without the bias weight. Using the bias seems to make the classifier identify all of the long GRBs but none of the short GRBs. This is strange behavior which gives an F1 score of almost 90\%. This does not seem correct. If I instead exclude the bias, in the output predictions, there are about half of each type of GRB identified (out of 185 long and 50 short GRBs.)
 
-A decision boundary can be constructed based on the line formed by the linear combination of features. It is the boundary where the hypothesis is equal to 0.5, such either side of the line represents where the hypothesis was larger or smaller than 0.5. This linear combination is just the equation for a line which has an ''x-intercept'', a ''y-intercept'', and a slope which can be solved for and plotted.
+A decision boundary can be constructed based on the line formed by the linear combination of features. It is the boundary where the hypothesis is equal to 0.5, such that either side of the line represents where the hypothesis was larger or smaller than 0.5; when the classifier predicted a long or a short GRB, respectively. To find it, we use the linear combination which is just the equation for a line with an ''x1-intercept'', a ''x2-intercept'', and a slope which can be solved for and plotted.
 
 \begin{equation}
   x_2 = -\frac{\theta_1}{\theta_2}x_1 + \frac{\text{logit}(0.5)-\theta_0}{\theta_2}
@@ -61,7 +61,7 @@ Where $x_1$ and $x_2$ are the training samples, $\theta_0$ is the bias input, $\
 \begin{figure}[h!]
   \centering
   \includegraphics[width=0.9\linewidth]{./plots/6_decisionboundary_x1x2.png}
-  \caption{\textbf{6}: The plots shows that there are two types of GRBs, blue dots for short, red dots for long. The 0.5 decision boundary should be a line dividing the two classes as best as possible based on the training. These boundaries are showing unexpected behavior which may be due to a plotting error or an unaccounted sign somewhere in the code. I don't think its a misinterpretation of my trained weights.}
+  \caption{\textbf{6}: The plots shows that there are two types of GRBs, blue dots for short, red dots for long. The 0.5 decision boundary should be a line dividing the two classes as best as possible based on the training. These boundaries are showing unexpected behavior which may be due to a plotting error or an unaccounted sign somewhere in the code. I don't think its a misinterpretation of my trained weights. The boundary should ideally divide the two classes of GRBs roughly.}
   \label{fig:decisionboundary1}
 \end{figure}
 
