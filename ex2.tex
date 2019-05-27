@@ -26,15 +26,43 @@ The resulting matrix of complex vectors is then Rayleigh distributed. Taking its
 
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=0.9\linewidth]{./plots/2_fourier_and_realplane.png}
-  \caption{\textbf{1d}: Taking the absolute value of the two complex matrices. The \textbf{left column} is the absolute value of the fourier plane constructed of drawn normal variates with variance that goes with the 2D wave number indices; this matrix is by definition complex since each point in the grid is constructed as \textit{a+bi} with a,b drawn variates. The \textbf{right column} is the absolute value of the inverse fourier transform of that matrix. It is still necessary to take the absolute value since the (remaining) imaginary component.}
+  \includegraphics[width=0.9\linewidth]{./plots/2_fourier_and_realplane_n-1.png}
+  \label{fig:abs}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/2_fourier_and_realplane_n-2.png}
+  \label{fig:abs}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/2_fourier_and_realplane_n-3.png}
+  \caption{\textbf{2}: Taking the absolute value of the two complex matrices. The \textbf{left column} is the absolute value of the fourier plane constructed of drawn normal variates with variance that goes with the 2D wave number indices; this matrix is by definition complex since each point in the grid is constructed as \textit{a+bi} with a,b drawn variates. The \textbf{right column} is the absolute value of the inverse fourier transform of that matrix. It is still necessary to take the absolute value since the (remaining) imaginary component.}
   \label{fig:abs}
 \end{figure}
 
 
+The larger (negative) the power of the dispersion relation is, the more smoothed out structures appear to become. This can be qualitatively judged from the FWHM os the peaks in the gaussian fields. By fitting gaussian, you could get an accurate estimate of that effect. But judging by eye, the magitude plots on the right hand side of the Fourier plane and Gaussian random field images show that a low negative power dispersion law, as in $P(k) \propto k^{-1}$ gives a minimum physical size on teh order of the pixel size of the image. In other words, on the scale of Mpc in this case. The next image (with $P(k) \propto k^{-1}$) shows Gaussian peaks with FWHM's of roughly 20\% the size of the image. And finally, the strongest power law dispersion has very smooth structure on the scale of half the image itself, or about 500 Mpc.
+
+In terms of k-modes, the Fourier plane is generally more at the same level for the weaker dispersion dependence (small $n$ values). The k values peak at the edges in the Fourier plane indicating lots of low frequency for larger negative $n$ (a smoother Gaussian field). A larger variation between minimum and maximum k therefore causes smoother Gaussian fields with broad FWHM features, and low frequency spatial variations. The log-scaled fourier planes show that for $n=-1$, k varies over roughly 6 orders of magnitude. While for $n=-3$, k varies over almost 12 order of magnitude.
+
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=0.9\linewidth]{./plots/2_realplane_imagrealparts.png}
+  \includegraphics[width=0.9\linewidth]{./plots/2_realplane_imagrealparts_n-1.png}
+  \label{fig:imagrealparts}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/2_realplane_imagrealparts_n-2.png}
+  \label{fig:imagrealparts}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/2_realplane_imagrealparts_n-1.png}
   \caption{\textbf{2}: The imaginary part in the \textbf{right column} should be close to zero having satisfied the symmetry in the array of fourier amplitude coefficients: when $\widetilde{Y}(-k)=\widetilde{Y}*(k)$ is satisfied, then the output inverse DFT should ideally be entirely real valued (no imaginary component left.) Due to machine floating point precision, there is a remaining imaginary component. The imaginary components should therefore be very close to zero, or very ''dim'' when scaled to the same color bar as the \textbf{left column} real components. That seems to not always hold true upon the generation of different fields (with different seeding.)}
   \label{fig:imagrealparts}
 \end{figure}

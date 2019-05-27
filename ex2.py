@@ -19,25 +19,28 @@ Nyquist_k=int(N/2)
 
 # Store array of fourier coefficients in a conjugate symmetry to enforce that the inv fourier transform will be real: Y(k)=y_re + iy_im with Y(-k)=Y*(k) --> -k_x - ik_y = k_x - ik_y
 # (Nyquist frequency and zero frequency have no negative frequency counterpart in discrete space, there's no "-0" components in kx or ky)
+#account for the zero mode frequency (an average over the whole gaussian field) and the Nyquist frequency (the smallest scale mode, which is half the sampling frequency aka half the distance between grid points)
 #fourier_coeff=np.concatenate((np.arange(0,1+Nyquist_k,1),np.arange(-1+Nyquist_k,0,-1)))
 fourier_coeff=np.concatenate((np.arange(0,1+Nyquist_k,1),np.arange(1-Nyquist_k,0,1)))
 
 #even_coeff=np.concatenate((np.arange(0,1+Nyquist_k,1),np.arange(1-Nyquist_k,0,1)))
 #odd_coeff=np.roll(even_coeff,-int((len(even_coeff)/4)-1))
 #fourier_coeff=[even_coeff,odd_coeff]
-print(fourier_coeff)
+
+
+
 # BoxMuller normal rvs with variance P(k,n)=sqrt(k_x^2+k_y^2)^n/2 and mean 0
 # results in a Rayleight distributed fourier space (and Gaussian real space)
-
 
 fourierplane1,kspace=createfourierplane(fourier_coeff,BoxMuller,N,n=-1.,returnk=True)
 fourierplane2=createfourierplane(fourier_coeff,BoxMuller,N,n=-2.)
 fourierplane3=createfourierplane(fourier_coeff,BoxMuller,N,n=-3.)
 
-
 realplane1=ifft2(fourierplane1)
 realplane2=ifft2(fourierplane2)
 realplane3=ifft2(fourierplane3)
+
+
 
 
 #plot the input space of fourier coefficients
@@ -72,11 +75,6 @@ plt.savefig("./plots/2_kspace.png")
 plt.clf()
 
 
-
-
-
-
-
 #plot the resulting fourier plane and inverse FFT resulting in Gaussian random field
 fourierplanes=[fourierplane1,fourierplane2,fourierplane3]
 realplanes=[realplane1,realplane2,realplane3]
@@ -99,10 +97,7 @@ for i in range(3):
 
     
 
-
-
 #compare the real and imaginary parts of inverse FFT
-
 plt.figure()
 for i in range(3):
     plt.subplot(1,2,1)
@@ -119,11 +114,11 @@ for i in range(3):
     plt.imshow(np.imag(realplanes[i]),vmin=cmin,vmax=cmax,origin='lower') # scale to real part's colorbar
     plt.colorbar(fraction=0.046, pad=0.04)
     plt.tight_layout(pad=0.4, w_pad=0.5, h_pad=1.0)
-    plt.savefig("./plots/2_realplane_imagrealpartse_n"+str(-(i+1))+".png")
+    plt.savefig("./plots/2_realplane_imagrealparts_n"+str(-(i+1))+".png")
     plt.clf()
 
 
 
-#account for the zero mode frequency (an average over the whole gaussian field) and the Nyquist frequency (the smallest scale mode, which is half the sampling frequency aka half the distance between grid points)
 
-#store fourier coefficients
+
+

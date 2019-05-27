@@ -32,6 +32,10 @@ python3 ex2.py
 echo "Run the third  exercise script ..."
 python3 ex3.py
 
+echo "Run the fourth  exercise script ..."
+python3 ex4.py > "ex4output.txt"
+
+
 echo "Run the sixth  exercise script ..."
 python3 ex6.py > "ex6output.txt"
 

@@ -30,7 +30,7 @@ def neville(I_estimate,order,acc): #benefits from Richardson Extrapolation of sm
             I[i]=(4.**(float(order))*I[i+1] - I[i]) / (4.**(float(order))-1.)
         err=abs(I[0]-I[1])
         if err<=acc:
-            print("(Combination of integral estimates converged to",acc,"in order",order,".)")
+            print("(Combination of trapezoid estimates converged to",acc,"in order",order,".)")
             return I[0]
     return I[0]
 

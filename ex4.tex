@@ -1,0 +1,33 @@
+The script used to generate the results is given by:
+
+\lstinputlisting{ex4.py}
+
+
+The result of the script is given by:
+
+\lstinputlisting{ex6output.txt}
+
+
+To find the time derivative of the linear growth factor:
+
+\begin{align}
+  \dot{D}(t) &= \frac{dD}{da}\dot{a} \\
+             &= \frac{dD}{da}H(z)a(z)\\
+             &= \frac{dD}{da}\left[H_0^2(\Omega_m(1+z)^3+\Omega_\Lambda)\right]^{1/2}\frac{1}{1+z}\\
+\end{align}
+
+At a single value of z, we can approximate $dD/da$ as roughly $D/a$, also known as the linear growth factor. Then using the same definition of redshift as above ($a=1/1+z$):
+
+\begin{align}
+  \dot{D}(t) &\approx (D)(1+z)\left[H_0^2(\Omega_m(1+z)^3+\Omega_\Lambda)\right]^{1/2}\frac{1}{1+z}\\
+             &=(D)\left[H_0^2(\Omega_m(1+z)^3+\Omega_\Lambda)\right]^{1/2}\\
+\end{align}
+
+Then we can plug in all the known values (where $D$ was found at z=50 in part (a):
+
+Om_m=0.3,Om_L=0.7,H_0=7.16e-11
+
+\begin{equation}
+  \dot{D}(50) = (0.0196078)(7.16e-11/yr)(0.3(1+50)^3+0.7) = 5.6 \times 10^{-8}
+\end{equation}
+
