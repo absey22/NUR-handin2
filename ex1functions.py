@@ -1,5 +1,4 @@
 import numpy as np
-#FUNCTIONS module for other scrits of EXERCISE 1 of this hand in 2 assignment
 
 
 #seed initially supplied to RNG
