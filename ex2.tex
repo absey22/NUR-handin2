@@ -13,10 +13,19 @@ Therefore, a grid is initialized with those fourier $k$ coefficients starting fr
 
 Doing the same for the $k_y$ component, and creating a matrix of with ($k_x$,$k_y$) indices will satisfy the condition of obtaining a real inverse fourier transform: conjugate symmetry of fourier coefficients.
 
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/2_kspacecomponents.png}
+  \caption{\textbf{2}: The resulting space of k values for the above sequence. The symmetric matrix of indices is constructed by drawing from the above 1D sequence at corresponding points in the grid defined by N. These symmetric $k_x$ and $k_y$ (whose power is a function of n in $k^n$) values are used to draw variates.}
+  \label{fig:kspace}
+\end{figure}
+
+
 \begin{figure}[h!]
   \centering
   \includegraphics[width=0.9\linewidth]{./plots/2_kspace.png}
-  \caption{\textbf{2}: The result space of k values for the above sequence. The symmetric matrix of indices is constructed by drawing from the above 1D sequence at corresponding points in the grid defined by N. These symmetric $k_x$ and $k_y$ (a function of n in $k^n$) values are used to draw variates.}
+  \caption{\textbf{2}: The magnitude of the above k components, demonstrating the input k values are conjugate symmetric.}
   \label{fig:kspace}
 \end{figure}
 

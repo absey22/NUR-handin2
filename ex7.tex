@@ -1,0 +1,40 @@
+The script used to generate the results is given by:
+  
+\lstinputlisting{ex7.py}
+
+The result of the script is given by:
+
+\lstinputlisting{ex7output.txt}
+
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/7_150particles.png}
+  \caption{\textbf{7}:}
+\end{figure}
+
+With a root node composed of children, each composed of children down to the leaf node (containing ideally just one coordinate point), the Barnes Hut Algorithm can be applied. Here, only a minimum of 12 coordinates per node is required, which can be done in 2 manual (as opposed to recursive) iterations of the quadtree building.
+In the B.H. algorithm, groups of points are succesively merged via calculating their multipole moment.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/7_150particles1stiter.png}
+  \caption{\textbf{7}: The Barnes Hut Quadtree with initial nodes denoted by color in each corner. The particle of interest has been starred.}
+  \label{fig:spatialdensitygrowtht0}
+\end{figure}
+
+
+The n=0 multipole moment is just the point mass approximate:
+
+\begin{equation}
+  M_0=\sum_i m_a
+\end{equation}
+
+Since all these particle masses are equal to 0.0125, the zeroeth multiple moments will only differ by a multiple of that mass. This also means that you get back just the total mass of all the particles upon adding up all the nodes. But the node moments won't be equal as they have different amounts of particles in them (150 in this case).
+
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/7_150particles2nditer.png}
+  \caption{\textbf{7}: The Barnes Hut Quadtree with leaf nodes colored. These leaf nodes contain 12 particles or less and are subsets of the nodes above. The zeroeth multipole moment is found in each of the colored leafnodes (by summing up the mass.) Then the multipole moment of the parent node, and eventually root node can be found in the same way.}
+\end{figure}

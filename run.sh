@@ -26,18 +26,22 @@ python3 ex1d.py
 echo "--1(e)--"
 python3 ex1e.py
 
-echo "Run the second  exercise script ..."
+echo "Run the second exercise script ..."
 python3 ex2.py
 
-echo "Run the third  exercise script ..."
+echo "Run the third exercise script ..."
 python3 ex3.py
 
-echo "Run the fourth  exercise script ..."
+echo "Run the fourth exercise script ..."
 python3 ex4.py > "ex4output.txt"
 
 
 echo "Run the sixth  exercise script ..."
 python3 ex6.py > "ex6output.txt"
+
+echo "Run the seventh exercise script ..."
+python3 ex7.py > "ex7output.txt"
+
 
 echo "Generating the pdf ..."
 
