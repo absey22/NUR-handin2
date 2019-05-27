@@ -7,14 +7,8 @@ The result of the script is given by:
 \lstinputlisting{ex7output.txt}
 
 
-\begin{figure}[h!]
-  \centering
-  \includegraphics[width=0.9\linewidth]{./plots/7_150particles.png}
-  \caption{\textbf{7}:}
-\end{figure}
+With a root node composed of children, which are each composed of children down to the leaf node (containing ideally just one coordinate point), the Barnes Hut Algorithm can be appliedto find the center of mass of sections of space. Here, only a minimum of 12 coordinates per node is required. This can be achieved in 2 manual (as opposed to recursive) iterations of the quadtree building.
 
-With a root node composed of children, each composed of children down to the leaf node (containing ideally just one coordinate point), the Barnes Hut Algorithm can be applied. Here, only a minimum of 12 coordinates per node is required, which can be done in 2 manual (as opposed to recursive) iterations of the quadtree building.
-In the B.H. algorithm, groups of points are succesively merged via calculating their multipole moment.
 
 \begin{figure}[h!]
   \centering
@@ -24,7 +18,7 @@ In the B.H. algorithm, groups of points are succesively merged via calculating t
 \end{figure}
 
 
-The n=0 multipole moment is just the point mass approximate:
+In the B.H. algorithm, groups of points are succesively merged via calculating their multipole moment. The n=0 multipole moment is just the point mass approximate:
 
 \begin{equation}
   M_0=\sum_i m_a

@@ -76,9 +76,7 @@ i,j=0,0
 for node in BHtree:
     for leafnode in node:
         M0leafnodes[i]=len(leafnode)*particlemass
-        print(j,i)
         if j==1 and i-4*j==3: # the node "coordinate" for the SW leafnode of the NE node
-            print("yes")
             M0_i100leafnode=M0leafnodes[i]
         i+=1
     j+=1
