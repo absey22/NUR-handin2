@@ -25,7 +25,10 @@ plt.subplot(2,2,2)
 plt.xlabel("index i")
 plt.ylabel("$x_i$")
 plt.title("$n_{draws}$ = 1,000")
-plt.bar(np.arange(len(uniformdraw[0:1000])),uniformdraw[0:1000])
+u=uniformdraw[0:1000]
+plt.hlines(0.5,0,1000,linestyles=":")
+plt.bar(np.arange(len(u)),u,label='>0.5: '+str(len(u[u<0.5]))+',  <0.5: '+str(len(u[u>0.5])))
+plt.legend(loc=1,handlelength=0,prop={'size': 9})
 
 #histogram the 1,000,000 random numbers
 plt.subplot(2,1,2)

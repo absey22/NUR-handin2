@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 # ==========================  1(d)   ==========================
 from ex1functions import kuiperstest,BoxMuller, GaussianCDF
-#from astropy.stats import kuiper
+#from astropy.stats import kuiper # wouldnt work with my GuassianCDF
 from scipy.stats import kstest
 
 
