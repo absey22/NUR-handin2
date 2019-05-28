@@ -1,10 +1,15 @@
+
+\begin{subsection}{Sub-question 5(c)}
+
 The script used to generate the results is given by:
   
 \lstinputlisting{ex5.py}
 
 
-The above script is my attempt at the solution. It fails to get past the recursive call to create the even frequency components. But it successfully does bit reversals of each slicing of the input array. If it worked, it would create the even and odd component arrays and then place those into a DFT (''split1'' and ''split2'') in order to reconstruct the final N frequency components of the FFT, from the original N time/spatial components of the input data.
+The above script is my attempt at the solution. It fails to get past the recursive call to create the even frequency components. But it successfully does bit reversals of each slicing of the input array. If it worked, it would create the even and odd component arrays and then place those into a DFT (''split1'' and ''split2'') in order to reconstruct the final N frequency components of the FFT, from the original N time/spatial points of the input data.
 
 An FFT does the same summation that a DFT does, but instead of $N^2$ operations, the FFT does $N\text{log}_2N$ operations.
 
 In an algorithm like Cooley-Tukey, the DFT sum is successively split into two halves. Making sure N is even integer (or else it is padded) leaves two DFTs in N/2 of the original points. This is further split down to single element sums. This algorithm factorizes the DFT data array into a product of mostly zero factors in the end, making it very fast.
+
+\end{subsection}

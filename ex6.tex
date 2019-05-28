@@ -36,7 +36,7 @@ Gradient descent (GD) is performed while the error (a difference between success
 \begin{figure}[h!]
   \centering
   \includegraphics[width=0.9\linewidth]{./plots/6_classificationperformance.png}
-  \caption{\textbf{6}: The cost function which sums up how how the hypothesis (based on three parameters and a bias) differs from the labels in each iteration converges down to a minimum after a couple thousand iterations of the gradient descent given the setting of the learning rate to <0.1.}
+  \caption{\textbf{6}: The cost function which sums up how how the hypothesis (based on three parameters and a bias) differs from the labels in each iteration converges down to a minimum after a couple thousand iterations of the gradient descent given the setting of the learning rate to $<$0.1.}
   \label{fig:classificationperformance}
 \end{figure}
 
@@ -68,6 +68,6 @@ Where $x_1$ and $x_2$ are the training samples, $\theta_0$ is the bias input, $\
 \begin{figure}[h!]
   \centering
   \includegraphics[width=0.9\linewidth]{./plots/6_decisionboundary_x2x3.png}
-  %\caption{\textbf{6}: The plots shows that there are two types of GRBs, blue dots for short, red dots for long. The 0.5 decision boundary should be a line dividing the two classes as best as possible based on the training. These boundaries are showing unexpected behavior which may be due to a plotting error or an unaccounted sign somewhere in the code. I don't think its a misinterpretation of my trained weights.}
+  \caption{\textbf{6}: Linear decision boundary becomes curved in log space. The classifier output on these parameters seems to behave much more accurately, enclosing most of the short GRBs on one side, while leaving the most amount of long GRBs on the other side of it as possible.}
   \label{fig:decisionboundary2}
 \end{figure}
