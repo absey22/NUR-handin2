@@ -10,17 +10,6 @@ from ex1functions import kuiperstest,GaussianPDF
 dataset=np.genfromtxt("randomnumbers.txt")
 
 
-#for i in range(dataset.shape[1]):
-#    plt.subplot(2,5,i+1)
-#    plt.hist(dataset[:,i],bins=20,edgecolor='black', linewidth=1.5,density=True)
-#    plt.plot(np.linspace(-5,5,55),GaussianPDF(np.linspace(-5,5,55)),linewidth=2,linestyle="#--",color='k')
-#    plt.xlim((-5,5))
-#    plt.ylim((0,0.45))
-#plt.title("Normalized Datasets ('randomnumbers.txt')")
-#plt.tight_layout(pad=0.4, w_pad=0.5, h_pad=1.0)
-#plt.savefig("./plots/1e_datasets.png")
-#plt.clf()
-
 
 for j in range(dataset.shape[1]):
     dex=0.1 
@@ -29,7 +18,6 @@ for j in range(dataset.shape[1]):
     mykuiper=np.zeros((len(cnt),3))
 
     data=dataset[:,j] # FOR EACH COLUMN in dataset:: take one of the data sets
-
     for i in range(len(cnt)): #slice it incrementally
         cnt[i]+=round(i*dex,2)
         dataslice=data[:int(10**cnt[i])]
